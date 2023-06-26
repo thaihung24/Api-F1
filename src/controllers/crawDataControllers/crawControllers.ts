@@ -86,7 +86,6 @@ async function scrapeDataRace(year: number) {
         return res
       }
     })
-
   // await page
   //   .$$eval('.resultsarchive-table tbody tr', (rows) =>
   //     rows.map((row) => ({
