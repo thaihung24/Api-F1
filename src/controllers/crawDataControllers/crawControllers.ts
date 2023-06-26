@@ -65,7 +65,6 @@ async function scrapeDataRace(year: number) {
           //lấy value trong option
           const value = (await option?.evaluate((node) => node.value)) as string
           // const text = await option?.evaluate((node) => node.textContent?.trim())
-
           //kiem tra neu value khong bang null
           if (value.split('/')[1]) {
             const data = res.find(
