@@ -1,5 +1,5 @@
 import e from 'express'
-import puppeteer from 'puppeteer'
+import puppeteer, { Page } from 'puppeteer'
 import Driver, { driverType } from '~/models/schemas/Drivers.schemas'
 import Team from '~/models/schemas/Teams.schemas'
 import driverService from '~/services/driver.services'
@@ -219,7 +219,128 @@ async function crawRaceResultByCountry(data: any) {
         data[countryIndex].date.split(' ')[data[countryIndex].date.split(' ').length - 1]
       }/races/${data[countryIndex].key}/race-result.html`
     )
+    const RaceResult = await page
+      .evaluate(() => {
+        const rows = Array.from(document.querySelectorAll('table.resultsarchive-table tbody tr'))
+        return rows.map((row) => {
+          const no = parseFloat(`${row.querySelector('td:nth-child(3)')?.textContent?.trim()}`)
+          const driver = row.querySelector('td:nth-child(4)')?.textContent?.replace(/\n\s+/g, ' ').trim()
+          const laps = parseFloat(`${row.querySelector('td:nth-child(6)')?.textContent?.trim()}`)
+          const timeRetried = row.querySelector('td:nth-child(7)')?.textContent?.trim()
+          const pts = parseFloat(`${row.querySelector('td:nth-child(8)')?.textContent?.trim()}`)
+          // const points = row.querySelector('td:nth-child(6)')?.textContent?.trim()
+
+          // console.log(result)
+          // return { position, driver, nationality, result, points } as any
+          return { no, driver, laps, timeRetried, pts } as any
+        })
+      })
+      .then((res) => {
+        //craw FastestLapsByCountry
+        return crawFastestLapsByCountry(
+          page,
+          res,
+          `https://www.formula1.com/en/results/jcr:content/resultsarchive.html/${
+            data[countryIndex].date.split(' ')[data[countryIndex].date.split(' ').length - 1]
+          }/races/${data[countryIndex].key}/fastest-laps.html`
+        )
+      })
+      .then((res) => {
+        return crawPitStopSummary(
+          page,
+          res,
+          `https://www.formula1.com/en/results/jcr:content/resultsarchive.html/${
+            data[countryIndex].date.split(' ')[data[countryIndex].date.split(' ').length - 1]
+          }/races/${data[countryIndex].key}/pit-stop-summary.html`
+        )
+      })
+      .then((res) => {
+        return crawStartingGrid(
+          page,
+          res,
+          `https://www.formula1.com/en/results/jcr:content/resultsarchive.html/${
+            data[countryIndex].date.split(' ')[data[countryIndex].date.split(' ').length - 1]
+          }/races/${data[countryIndex].key}/starting-grid.html`
+        )
+      })
+    console.log(RaceResult, '----266---')
   }
   return data
+}
+async function crawFastestLapsByCountry(page: Page, res: any, url: string) {
+  await page.goto(url)
+  const FastestLaps = await page.evaluate(() => {
+    const rows = Array.from(document.querySelectorAll('table.resultsarchive-table tbody tr'))
+    return rows.map((row) => {
+      const no = parseFloat(`${row.querySelector('td:nth-child(3)')?.textContent?.trim()}`)
+      const lap = parseFloat(`${row.querySelector('td:nth-child(6)')?.textContent?.trim()}`)
+      const time_of_day = row.querySelector('td:nth-child(7)')?.textContent?.trim()
+      const time = row.querySelector('td:nth-child(8)')?.textContent?.trim()
+      const avg_speed = parseFloat(`${row.querySelector('td:nth-child(9)')?.textContent?.trim()}`)
+      return { no, lap, time_of_day, time, avg_speed } as any
+    })
+  })
+  for (const fastestLap of FastestLaps) {
+    const result = res.find((res: any) => res.no === fastestLap.no)
+    if (result) {
+      result.fastest_lap = {
+        lap: fastestLap.lap,
+        time_of_day: fastestLap.time_of_day,
+        time: fastestLap.time,
+        avg_speed: fastestLap.avg_speed
+      }
+    }
+  }
+  return res
+}
+async function crawPitStopSummary(page: Page, res: any, url: string) {
+  await page.goto(url)
+  const PitStopSummary = await page.evaluate(() => {
+    const rows = Array.from(document.querySelectorAll('table.resultsarchive-table tbody tr'))
+    return rows.map((row) => {
+      const no = parseFloat(`${row.querySelector('td:nth-child(3)')?.textContent?.trim()}`)
+      const lap = parseFloat(`${row.querySelector('td:nth-child(6)')?.textContent?.trim()}`)
+      const time_of_day = row.querySelector('td:nth-child(7)')?.textContent?.trim()
+      const time = row.querySelector('td:nth-child(8)')?.textContent?.trim()
+      const total = parseFloat(`${row.querySelector('td:nth-child(9)')?.textContent?.trim()}`)
+      return { no, lap, time_of_day, time, total } as any
+    })
+  })
+  for (const pitStop of PitStopSummary) {
+    const result = res.find((res: any) => res.no === pitStop.no)
+    if (result) {
+      if (!result.pit_stop_summary) {
+        result.pit_stop_summary = []
+      }
+
+      result.pit_stop_summary.push({
+        lap: pitStop.lap,
+        time_of_day: pitStop.time_of_day,
+        time: pitStop.time,
+        total: pitStop.total
+      })
+    }
+  }
+  return res
+}
+async function crawStartingGrid(page: Page, res: any, url: string) {
+  await page.goto(url)
+  const CrawStartingGrid = await page.evaluate(() => {
+    const rows = Array.from(document.querySelectorAll('table.resultsarchive-table tbody tr'))
+    return rows.map((row) => {
+      const pos = parseFloat(`${row.querySelector('td:nth-child(2)')?.textContent?.trim()}`)
+      const no = parseFloat(`${row.querySelector('td:nth-child(3)')?.textContent?.trim()}`)
+      const time = row.querySelector('td:nth-child(6)')?.textContent?.trim()
+
+      return { pos, no, time } as any
+    })
+  })
+  for (const StartingGrid of CrawStartingGrid) {
+    const result = res.find((res: any) => res.no === StartingGrid.no)
+    if (result) {
+      result.stating_grid = { pos: StartingGrid.pos, time: StartingGrid.time }
+    }
+  }
+  return res
 }
 crawDriverController()

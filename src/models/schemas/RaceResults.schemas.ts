@@ -25,7 +25,10 @@ export interface RaceResultType {
       total: number
     }
   ]
-  stating_grid: number
+  stating_grid: {
+    pos: number
+    time: string
+  }
   qualifying: {
     Q1: number
     Q2: number
@@ -75,7 +78,10 @@ export default class RaceResult {
       total: number
     }
   ]
-  stating_grid: number
+  stating_grid: {
+    pos: number
+    time: string
+  }
   practice3: {
     time: number
     gap: number
