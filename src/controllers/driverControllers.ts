@@ -3,11 +3,12 @@ import puppeteer from 'puppeteer'
 import axios from 'axios'
 import teamService from '~/services/driver.services'
 import driverService from '~/services/driver.services'
+import raceResultService from '~/services/raceResult.service'
 export const getDriverController = async (req: Request, res: Response, next: NextFunction) => {
   const { driver } = req.body
   // console.log(car)
   try {
-    const result = await driverService.find(driver)
+    const result = await raceResultService.findByDriverId(driver)
     console.log(driver)
     return res.json({
       message: 'Success',

@@ -1,8 +1,10 @@
-import e from 'express'
 import puppeteer, { Page } from 'puppeteer'
 import Driver, { driverType } from '~/models/schemas/Drivers.schemas'
-import Team from '~/models/schemas/Teams.schemas'
+
 import driverService from '~/services/driver.services'
+import raceResultService from '~/services/raceResult.service'
+process.setMaxListeners(15) // Set the maximum number of listeners to 15
+
 const crawDriverController = async () => {
   // const browser = await puppeteer.launch()
   // const page = await browser.newPage()
@@ -30,7 +32,7 @@ const crawDriverController = async () => {
   // craw data race sine 2023 -->1958
 
   //eslint-disable-next-line for-direction
-  for (let year = 2023; year >= 2023; year--) {
+  for (let year = 2023; year >= 1958; year--) {
     scrapeDataRace(year)
       .then((data) => {
         return crawRaceResultByCountry(data)
@@ -206,7 +208,7 @@ async function scrapeDataDriver() {
         }
       }
     }
-    // console.log(driverStandings)
+    console.log(driverStandings)
     await browser.close()
   }
 }
@@ -263,8 +265,36 @@ async function crawRaceResultByCountry(data: any) {
           }/races/${data[countryIndex].key}/starting-grid.html`
         )
       })
-    console.log(RaceResult, '----266---')
+      .then((res) => {
+        return crawQualifying(
+          page,
+          res,
+          `https://www.formula1.com/en/results/jcr:content/resultsarchive.html/${
+            data[countryIndex].date.split(' ')[data[countryIndex].date.split(' ').length - 1]
+          }/races/${data[countryIndex].key}/qualifying.html`
+        )
+      })
+      .then((res) => {
+        return crawPractices(
+          page,
+          res,
+          `https://www.formula1.com/en/results/jcr:content/resultsarchive.html/${
+            data[countryIndex].date.split(' ')[data[countryIndex].date.split(' ').length - 1]
+          }/races/${data[countryIndex].key}/practice`
+        )
+      })
+    for (const Result of RaceResult) {
+      const result = await driverService.find(Result.driver)
+      if (result) {
+        Result.driver = result._id
+        Result.dateTime = new Date(data[countryIndex].date)
+        Result.country = data[countryIndex].grandPrix
+        console.log(Result)
+        await raceResultService.create(Result)
+      }
+    }
   }
+
   return data
 }
 async function crawFastestLapsByCountry(page: Page, res: any, url: string) {
@@ -302,7 +332,7 @@ async function crawPitStopSummary(page: Page, res: any, url: string) {
       const lap = parseFloat(`${row.querySelector('td:nth-child(6)')?.textContent?.trim()}`)
       const time_of_day = row.querySelector('td:nth-child(7)')?.textContent?.trim()
       const time = row.querySelector('td:nth-child(8)')?.textContent?.trim()
-      const total = parseFloat(`${row.querySelector('td:nth-child(9)')?.textContent?.trim()}`)
+      const total = row.querySelector('td:nth-child(9)')?.textContent?.trim()
       return { no, lap, time_of_day, time, total } as any
     })
   })
@@ -341,6 +371,79 @@ async function crawStartingGrid(page: Page, res: any, url: string) {
       result.stating_grid = { pos: StartingGrid.pos, time: StartingGrid.time }
     }
   }
+  return res
+}
+async function crawQualifying(page: Page, res: any, url: string) {
+  await page.goto(url)
+  const CrawQualifying = await page.evaluate(() => {
+    const rows = Array.from(document.querySelectorAll('table.resultsarchive-table tbody tr'))
+    return rows.map((row) => {
+      const no = parseFloat(`${row.querySelector('td:nth-child(3)')?.textContent?.trim()}`)
+      const q1 = row.querySelector('td:nth-child(6)')?.textContent?.trim()
+      const q2 = row.querySelector('td:nth-child(7)')?.textContent?.trim()
+      const q3 = row.querySelector('td:nth-child(8)')?.textContent?.trim()
+      const laps = parseFloat(`${row.querySelector('td:nth-child(9)')?.textContent?.trim()}`)
+
+      return { no, q1, q2, q3, laps } as any
+    })
+  })
+  for (const Qualifying of CrawQualifying) {
+    const result = res.find((res: any) => res.no === Qualifying.no)
+    if (result) {
+      result.qualifying = {
+        q1: Qualifying.q1,
+        q2: Qualifying.q2,
+        q3: Qualifying.q3,
+        laps: Qualifying.laps
+      }
+    }
+  }
+  return res
+}
+async function crawPractices(page: Page, res: any, url: string) {
+  // eslint-disable-next-line for-direction
+  const practices = ['practice1', 'practice2', 'practice3']
+  // eslint-disable-next-line for-direction
+  for (let index = 3; index >= 1; index--) {
+    console.log(practices[index - 1])
+    await page.goto(`${url}-${index}.html`)
+    const CrawPractices = await page.evaluate(() => {
+      const rows = Array.from(document.querySelectorAll('table.resultsarchive-table tbody tr'))
+      return rows.map((row) => {
+        const no = parseFloat(`${row.querySelector('td:nth-child(3)')?.textContent?.trim()}`)
+        const time = row.querySelector('td:nth-child(6)')?.textContent?.trim()
+        const gap = row.querySelector('td:nth-child(7)')?.textContent?.trim()
+        const laps = parseFloat(`${row.querySelector('td:nth-child(8)')?.textContent?.trim()}`)
+        return { no, time, gap, laps }
+      })
+    })
+    for (const Practice of CrawPractices) {
+      const result = res.find((res: any) => res.no == Practice.no)
+
+      if (result) {
+        if (index === 3) {
+          result.practice3 = {
+            time: Practice.time,
+            gap: Practice.gap,
+            laps: Practice.laps
+          }
+        } else if (index === 2) {
+          result.practice2 = {
+            time: Practice.time,
+            gap: Practice.gap,
+            laps: Practice.laps
+          }
+        } else {
+          result.practice1 = {
+            time: Practice.time,
+            gap: Practice.gap,
+            laps: Practice.laps
+          }
+        }
+      }
+    }
+  }
+
   return res
 }
 crawDriverController()

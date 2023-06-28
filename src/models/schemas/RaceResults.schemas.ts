@@ -11,7 +11,7 @@ export interface RaceResultType {
   laps: number
   timeRetried: string
   pts: number
-  fastest_laps: {
+  fastest_lap: {
     lap: number
     time_of_day: string
     time: string
@@ -22,7 +22,7 @@ export interface RaceResultType {
       lap: number
       time_of_day: string
       time: string
-      total: number
+      total: string
     }
   ]
   stating_grid: {
@@ -30,13 +30,16 @@ export interface RaceResultType {
     time: string
   }
   qualifying: {
-    Q1: number
-    Q2: number
-    Q3: number
+    Q1: string
+    Q2: string
+    Q3: string
     laps: number
   }
   practice3: {
-    time: number
+    time: {
+      hour: number
+      second: number
+    }
     gap: number
     laps: number
   }
@@ -50,6 +53,7 @@ export interface RaceResultType {
     gap: number
     laps: number
   }
+  country: string
   dateTime: Date
 }
 
@@ -64,7 +68,7 @@ export default class RaceResult {
   laps: number
   timeRetried: string
   pts: number
-  fastest_laps: {
+  fastest_lap: {
     lap: number
     time_of_day: string
     time: string
@@ -75,7 +79,7 @@ export default class RaceResult {
       lap: number
       time_of_day: string
       time: string
-      total: number
+      total: string
     }
   ]
   stating_grid: {
@@ -83,7 +87,10 @@ export default class RaceResult {
     time: string
   }
   practice3: {
-    time: number
+    time: {
+      hour: number
+      second: number
+    }
     gap: number
     laps: number
   }
@@ -97,6 +104,7 @@ export default class RaceResult {
     gap: number
     laps: number
   }
+  country: string
   dateTime: Date
   constructor(raceResult: RaceResultType) {
     this._id = raceResult._id
@@ -105,13 +113,14 @@ export default class RaceResult {
     this.laps = raceResult.laps
     this.timeRetried = raceResult.timeRetried
     this.pts = raceResult.pts
-    this.fastest_laps = raceResult.fastest_laps
+    this.fastest_lap = raceResult.fastest_lap
     this.pit_stop_summary = raceResult.pit_stop_summary
     this.stating_grid = raceResult.stating_grid
     this.practice3 = raceResult.practice3
     this.practice2 = raceResult.practice2
     this.practice1 = raceResult.practice1
     this.car = raceResult.car
+    this.country = raceResult.country
     this.dateTime = raceResult.dateTime
   }
 }
