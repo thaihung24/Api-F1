@@ -1,3 +1,4 @@
+import { ObjectId } from 'mongodb'
 import puppeteer, { Page } from 'puppeteer'
 import Driver, { driverType } from '~/models/schemas/Drivers.schemas'
 
@@ -32,7 +33,7 @@ const crawDriverController = async () => {
   // craw data race sine 2023 -->1958
 
   //eslint-disable-next-line for-direction
-  for (let year = 2023; year >= 1958; year--) {
+  for (let year = 2023; year >= 2020; year--) {
     scrapeDataRace(year)
       .then((data) => {
         return crawRaceResultByCountry(data)
@@ -213,87 +214,112 @@ async function scrapeDataDriver() {
   }
 }
 async function crawRaceResultByCountry(data: any) {
-  for (const countryIndex in data) {
-    const browser = await puppeteer.launch()
-    const page = await browser.newPage()
-    await page.goto(
-      `https://www.formula1.com/en/results/jcr:content/resultsarchive.html/${
-        data[countryIndex].date.split(' ')[data[countryIndex].date.split(' ').length - 1]
-      }/races/${data[countryIndex].key}/race-result.html`
-    )
-    const RaceResult = await page
-      .evaluate(() => {
-        const rows = Array.from(document.querySelectorAll('table.resultsarchive-table tbody tr'))
-        return rows.map((row) => {
-          const no = parseFloat(`${row.querySelector('td:nth-child(3)')?.textContent?.trim()}`)
-          const driver = row.querySelector('td:nth-child(4)')?.textContent?.replace(/\n\s+/g, ' ').trim()
-          const laps = parseFloat(`${row.querySelector('td:nth-child(6)')?.textContent?.trim()}`)
-          const timeRetried = row.querySelector('td:nth-child(7)')?.textContent?.trim()
-          const pts = parseFloat(`${row.querySelector('td:nth-child(8)')?.textContent?.trim()}`)
-          // const points = row.querySelector('td:nth-child(6)')?.textContent?.trim()
+  const browser = await puppeteer.launch()
+  const page = await browser.newPage()
+  await page.goto(
+    `https://www.formula1.com/en/results/jcr:content/resultsarchive.html/${
+      data[0].date.split(' ')[data[0].date.split(' ').length - 1]
+    }/races/${data[0].key}/race-result.html`
+  )
+  const selectElements = await page.$$('.resultsarchive-filter-form-select')
 
-          // console.log(result)
-          // return { position, driver, nationality, result, points } as any
-          return { no, driver, laps, timeRetried, pts } as any
-        })
-      })
-      .then((res) => {
-        //craw FastestLapsByCountry
-        return crawFastestLapsByCountry(
-          page,
-          res,
-          `https://www.formula1.com/en/results/jcr:content/resultsarchive.html/${
-            data[countryIndex].date.split(' ')[data[countryIndex].date.split(' ').length - 1]
-          }/races/${data[countryIndex].key}/fastest-laps.html`
-        )
-      })
-      .then((res) => {
-        return crawPitStopSummary(
-          page,
-          res,
-          `https://www.formula1.com/en/results/jcr:content/resultsarchive.html/${
-            data[countryIndex].date.split(' ')[data[countryIndex].date.split(' ').length - 1]
-          }/races/${data[countryIndex].key}/pit-stop-summary.html`
-        )
-      })
-      .then((res) => {
-        return crawStartingGrid(
-          page,
-          res,
-          `https://www.formula1.com/en/results/jcr:content/resultsarchive.html/${
-            data[countryIndex].date.split(' ')[data[countryIndex].date.split(' ').length - 1]
-          }/races/${data[countryIndex].key}/starting-grid.html`
-        )
-      })
-      .then((res) => {
-        return crawQualifying(
-          page,
-          res,
-          `https://www.formula1.com/en/results/jcr:content/resultsarchive.html/${
-            data[countryIndex].date.split(' ')[data[countryIndex].date.split(' ').length - 1]
-          }/races/${data[countryIndex].key}/qualifying.html`
-        )
-      })
-      .then((res) => {
-        return crawPractices(
-          page,
-          res,
-          `https://www.formula1.com/en/results/jcr:content/resultsarchive.html/${
-            data[countryIndex].date.split(' ')[data[countryIndex].date.split(' ').length - 1]
-          }/races/${data[countryIndex].key}/practice`
-        )
-      })
-    for (const Result of RaceResult) {
-      const result = await driverService.find(Result.driver)
-      if (result) {
-        Result.driver = result._id
-        Result.dateTime = new Date(data[countryIndex].date)
-        Result.country = data[countryIndex].grandPrix
-        console.log(Result)
-        await raceResultService.create(Result)
+  if (selectElements) {
+    const selectElement = selectElements[3]
+    const optionElements = await selectElement.$$('option')
+
+    for (const optionElement of optionElements) {
+      const text = await page.evaluate((el) => el.textContent, optionElement)
+      const value = await page.evaluate((el) => el.value, optionElement)
+      let template: { [key: string]: string } = {
+        [`${value.replace(new RegExp('-', 'g'), '_')}`]: '12',
+        hungw: '12'
       }
+      template = { ...template, [`${value.replace(new RegExp('-', 'g'), '_')}`]: '2' }
+      console.log(template, text, value, data[0].date.split(' ')[data[0].date.split(' ').length - 1])
     }
   }
+
+  // for (const countryIndex in data) {
+  //   const browser = await puppeteer.launch()
+  //   const page = await browser.newPage()
+  //   await page.goto(
+  //     `https://www.formula1.com/en/results/jcr:content/resultsarchive.html/${
+  //       data[countryIndex].date.split(' ')[data[countryIndex].date.split(' ').length - 1]
+  //     }/races/${data[countryIndex].key}/race-result.html`
+  //   )
+  //   const RaceResult = await page
+  //     .evaluate(() => {
+  //       const rows = Array.from(document.querySelectorAll('table.resultsarchive-table tbody tr'))
+  //       return rows.map((row) => {
+  //         const no = parseFloat(`${row.querySelector('td:nth-child(3)')?.textContent?.trim()}`)
+  //         const driver = row.querySelector('td:nth-child(4)')?.textContent?.replace(/\n\s+/g, ' ').trim()
+  //         const laps = parseFloat(`${row.querySelector('td:nth-child(6)')?.textContent?.trim()}`)
+  //         const timeRetried = row.querySelector('td:nth-child(7)')?.textContent?.trim()
+  //         const pts = parseFloat(`${row.querySelector('td:nth-child(8)')?.textContent?.trim()}`)
+  //         // const points = row.querySelector('td:nth-child(6)')?.textContent?.trim()
+
+  //         // console.log(result)
+  //         // return { position, driver, nationality, result, points } as any
+  //         return { no, driver, laps, timeRetried, pts } as any
+  //       })
+  //     })
+  //     .then((res) => {
+  //       //craw FastestLapsByCountry
+  //       return crawFastestLapsByCountry(
+  //         page,
+  //         res,
+  //         `https://www.formula1.com/en/results/jcr:content/resultsarchive.html/${
+  //           data[countryIndex].date.split(' ')[data[countryIndex].date.split(' ').length - 1]
+  //         }/races/${data[countryIndex].key}/fastest-laps.html`
+  //       )
+  //     })
+  //     .then((res) => {
+  //       return crawPitStopSummary(
+  //         page,
+  //         res,
+  //         `https://www.formula1.com/en/results/jcr:content/resultsarchive.html/${
+  //           data[countryIndex].date.split(' ')[data[countryIndex].date.split(' ').length - 1]
+  //         }/races/${data[countryIndex].key}/pit-stop-summary.html`
+  //       )
+  //     })
+  //     .then((res) => {
+  //       return crawStartingGrid(
+  //         page,
+  //         res,
+  //         `https://www.formula1.com/en/results/jcr:content/resultsarchive.html/${
+  //           data[countryIndex].date.split(' ')[data[countryIndex].date.split(' ').length - 1]
+  //         }/races/${data[countryIndex].key}/starting-grid.html`
+  //       )
+  //     })
+  //     .then((res) => {
+  //       return crawQualifying(
+  //         page,
+  //         res,
+  //         `https://www.formula1.com/en/results/jcr:content/resultsarchive.html/${
+  //           data[countryIndex].date.split(' ')[data[countryIndex].date.split(' ').length - 1]
+  //         }/races/${data[countryIndex].key}/qualifying.html`
+  //       )
+  //     })
+  //     .then((res) => {
+  //       return crawPractices(
+  //         page,
+  //         res,
+  //         `https://www.formula1.com/en/results/jcr:content/resultsarchive.html/${
+  //           data[countryIndex].date.split(' ')[data[countryIndex].date.split(' ').length - 1]
+  //         }/races/${data[countryIndex].key}/practice`
+  //       )
+  //     })
+  //   for (const Result of RaceResult) {
+  //     const result = await driverService.find(Result.driver)
+  //     if (result) {
+  //       Result.driver = result._id
+  //       Result.dateTime = new Date(data[countryIndex].date)
+  //       Result.country = data[countryIndex].grandPrix
+  //       console.log(Result)
+  //       await raceResultService.create(Result)
+  //     }
+  //   }
+  // }
 
   return data
 }
@@ -422,19 +448,19 @@ async function crawPractices(page: Page, res: any, url: string) {
 
       if (result) {
         if (index === 3) {
-          result.practice3 = {
+          result.practice_3 = {
             time: Practice.time,
             gap: Practice.gap,
             laps: Practice.laps
           }
         } else if (index === 2) {
-          result.practice2 = {
+          result.practice_2 = {
             time: Practice.time,
             gap: Practice.gap,
             laps: Practice.laps
           }
         } else {
-          result.practice1 = {
+          result.practice_1 = {
             time: Practice.time,
             gap: Practice.gap,
             laps: Practice.laps
@@ -445,5 +471,8 @@ async function crawPractices(page: Page, res: any, url: string) {
   }
 
   return res
+}
+async function startCraw(params: any) {
+  return 1
 }
 crawDriverController()

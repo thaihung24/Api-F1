@@ -14,7 +14,11 @@ class RaceResultService {
   async findByDriverId(payload: string) {
     try {
       const result = databaseService.race_results
-        .find({ driver: new ObjectId(payload) as any, dateTime: '05 Mar 2023' as any })
+        .find({
+          driver: new ObjectId(payload) as any,
+          dateTime: { $gte: new Date('2016-01-01T00:00:00.000Z'), $lt: new Date('2017-01-01T00:00:00.000Z') }
+          // stating_grid: { $ne: null }
+        })
         .toArray()
       return result
 

@@ -35,7 +35,7 @@ export interface RaceResultType {
     Q3: string
     laps: number
   }
-  practice3: {
+  practice_3: {
     time: {
       hour: number
       second: number
@@ -43,12 +43,12 @@ export interface RaceResultType {
     gap: number
     laps: number
   }
-  practice2: {
+  practice_2: {
     time: number
     gap: number
     laps: number
   }
-  practice1: {
+  practice_1: {
     time: number
     gap: number
     laps: number
@@ -82,11 +82,11 @@ export default class RaceResult {
       total: string
     }
   ]
-  stating_grid: {
+  stating_grid?: {
     pos: number
     time: string
-  }
-  practice3: {
+  } | null
+  practice_3: {
     time: {
       hour: number
       second: number
@@ -94,12 +94,12 @@ export default class RaceResult {
     gap: number
     laps: number
   }
-  practice2: {
+  practice_2: {
     time: number
     gap: number
     laps: number
   }
-  practice1: {
+  practice_1: {
     time: number
     gap: number
     laps: number
@@ -116,9 +116,9 @@ export default class RaceResult {
     this.fastest_lap = raceResult.fastest_lap
     this.pit_stop_summary = raceResult.pit_stop_summary
     this.stating_grid = raceResult.stating_grid
-    this.practice3 = raceResult.practice3
-    this.practice2 = raceResult.practice2
-    this.practice1 = raceResult.practice1
+    this.practice_3 = raceResult.practice_3
+    this.practice_2 = raceResult.practice_2
+    this.practice_1 = raceResult.practice_1
     this.car = raceResult.car
     this.country = raceResult.country
     this.dateTime = raceResult.dateTime
