@@ -4,7 +4,7 @@ import Driver, { driverType } from '~/models/schemas/Drivers.schemas'
 
 import driverService from '~/services/driver.services'
 import raceResultService from '~/services/raceResult.service'
-process.setMaxListeners(8) // Set the maximum number of listeners to 15
+process.setMaxListeners(12) // Set the maximum number of listeners to 15
 interface raceType {
   key: string
   value: string
@@ -15,10 +15,13 @@ const crawDriverController = async () => {
   // craw data race sine 2023 -->1958
 
   //eslint-disable-next-line for-direction
-  for (let year = 2023; year >= 1960; year--) {
+  for (let year = 1959; year >= 1958; year--) {
     scrapeDataRace(year)
       .then((data) => {
-        crawRaceResultByCountry(data)
+        return crawRaceResultByCountry(data)
+      })
+      .then((res) => {
+        console.log('success ', res)
       })
       .catch((err) => {
         console.log(err)
@@ -261,6 +264,15 @@ async function crawRaceResultByCountry(data: any) {
                         [`${res[index].toLowerCase().replace(/[-\s/]/g, '_')}`]:
                           tableRow[`${index}`]?.replace(/\n\s+/g, ' ') || 0
                       }
+                      // if (race.key === 'race-result' && index == 7) {
+                      //   console.log(
+                      //     '--',
+                      //     temp,
+                      //     country.key,
+                      //     tableRow[`${index}`],
+                      //     tableRow[`${index}`]?.replace(/\n\s+/g, ' ')
+                      //   )
+                      // }
                     }
                     if (race.key === 'race-result') {
                       if (!dataRaceResult.find((data) => data.no == temp.no)) {
@@ -291,7 +303,6 @@ async function crawRaceResultByCountry(data: any) {
 
                   // console.log(dataRaceResult)
                   // for (const data of dataRaceResult) {
-                  //   console.log(data)
                   //   const result = await driverService.find(data.driver)
                   //   if (result) {
                   //     data.driver = result._id
@@ -308,13 +319,14 @@ async function crawRaceResultByCountry(data: any) {
           if (result) {
             data.driver = result._id
             const insert = await raceResultService.create(data)
-            if (insert) {
-              console.log('Success', data)
-            }
+            // if (insert) {
+            //   console.log('Success', country.date)
+            // }
           }
         }
       }
     }
+    return data[0]?.date
   } catch (error) {
     throw error
   }

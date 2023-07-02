@@ -36,3 +36,16 @@ export const getDriverController = async (req: Request, res: Response, next: Nex
   // }
   // await browser.close()
 }
+export const getDriverByYear = async (req: Request, res: Response, next: NextFunction) => {
+  const year = req.params.year || 2023
+  // eslint-disable-next-line no-useless-catch
+  try {
+    const result = await driverService.getDriverInYear('2023')
+    res.status(200).json({
+      message: 'Success',
+      data: result
+    })
+  } catch (error) {
+    throw error
+  }
+}
