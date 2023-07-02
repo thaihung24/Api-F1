@@ -4,91 +4,83 @@ import Driver, { driverType } from '~/models/schemas/Drivers.schemas'
 
 import driverService from '~/services/driver.services'
 import raceResultService from '~/services/raceResult.service'
-process.setMaxListeners(15) // Set the maximum number of listeners to 15
-
+process.setMaxListeners(8) // Set the maximum number of listeners to 15
+interface raceType {
+  key: string
+  value: string
+}
 const crawDriverController = async () => {
-  // const browser = await puppeteer.launch()
-  // const page = await browser.newPage()
-  // await page.goto(`https://www.formula1.com/en/results/jcr:content/resultsarchive.html/2023/drivers.html`)
-  // const selectElements = await page.$$('.resultsarchive-filter-form-select')
-  // // Lấy các giá trị trong phần tử <select>
-  // if (selectElements) {
-  //   const selectElement = selectElements[0]
-  //   const optionElements = await selectElement.$$('option')
-  //   for (const optionElement of optionElements) {
-  //     const text = await page.evaluate((el) => el.textContent, optionElement)
-  //     console.log(text)
-  //   }
-  // for (const selectElement of selectElements) {
-  //   const optionElements = await selectElement.$$('option')
-  //   for (const optionElement of optionElements) {
-  //     const text = await page.evaluate((el) => el.textContent, optionElement)
-  //     console.log(text)
-  //   }
-  // }
-  // }
-
   //Craw data sine 2023 --> 1958
   // scrapeDataDriver()
   // craw data race sine 2023 -->1958
 
   //eslint-disable-next-line for-direction
-  for (let year = 2023; year >= 2020; year--) {
+  for (let year = 2023; year >= 1960; year--) {
     scrapeDataRace(year)
       .then((data) => {
-        return crawRaceResultByCountry(data)
+        crawRaceResultByCountry(data)
       })
-      .then((data) => {
-        console.log(data)
+      .catch((err) => {
+        console.log(err)
       })
   }
 }
 
 async function scrapeDataRace(year: number) {
-  const browser = await puppeteer.launch()
-  const page = await browser.newPage()
+  // eslint-disable-next-line no-useless-catch
+  try {
+    const browser = await puppeteer.launch()
+    const page = await browser.newPage()
 
-  await page.goto(`https://www.formula1.com/en/results/jcr:content/resultsarchive.html/${year}/races.html`)
-  const results = await page
-    .$$eval('.resultsarchive-table tbody tr', (rows) =>
-      rows.map((row) => ({
-        grandPrix: row.querySelector('td:nth-child(2) a')?.textContent?.trim() as any,
-        date: row.querySelector('td:nth-child(3)')?.textContent?.trim(),
-        time: row.querySelector('td:nth-child(7)')?.textContent?.trim(),
-        key: ''
-      }))
-    )
-    .then(async (res) => {
-      const selectElements = await page.$$('.resultsarchive-filter-form-select')
-      if (selectElements) {
-        const selectElement = selectElements[2]
-        const optionElements = await selectElement.$$('option')
-        //lấy các option
-        for (const option of optionElements) {
-          //lấy value trong option
-          const value = (await option?.evaluate((node) => node.value)) as string
-          // const text = await option?.evaluate((node) => node.textContent?.trim())
-          //kiem tra neu value khong bang null
-          if (value.split('/')[1]) {
-            const data = res.find(
-              (result) =>
-                result.grandPrix ===
-                value
-                  .split('/')[1]
-                  .replace('-', ' ')
-                  .split(' ')
-                  .map((value) => value.charAt(0).toUpperCase() + value.slice(1)) //sử lý chuổi
-                  .join(',')
-                  .replace(',', ' ')
-            )
-            if (data) {
-              data.key = value
+    await page.goto(`https://www.formula1.com/en/results/jcr:content/resultsarchive.html/${year}/races.html`)
+    const results = await page
+      .$$eval('.resultsarchive-table tbody tr', (rows) =>
+        rows.map((row) => ({
+          grandPrix: row.querySelector('td:nth-child(2) a')?.textContent?.trim() as any,
+          date: row.querySelector('td:nth-child(3)')?.textContent?.trim(),
+          time: row.querySelector('td:nth-child(7)')?.textContent?.trim(),
+          key: ''
+        }))
+      )
+      .then(async (res) => {
+        const selectElements = await page.$$('.resultsarchive-filter-form-select')
+        if (selectElements) {
+          const selectElement = selectElements[2]
+          const optionElements = await selectElement.$$('option')
+          if (optionElements) {
+            //lấy các option
+            for (const option of optionElements) {
+              //lấy value trong option
+              const value = (await option?.evaluate((node) => node.value)) as string
+              // const text = await option?.evaluate((node) => node.textContent?.trim())
+              //kiem tra neu value khong bang null
+              if (value.split('/')[1]) {
+                const data = res.find(
+                  (result) =>
+                    result.grandPrix ===
+                    value
+                      .split('/')[1]
+                      .replace('-', ' ')
+                      .split(' ')
+                      .map((value) => value.charAt(0).toUpperCase() + value.slice(1)) //sử lý chuổi
+                      .join(',')
+                      .replace(',', ' ')
+                )
+                if (data) {
+                  data.key = value
+                }
+              }
             }
           }
+          return res
         }
-        return res
-      }
-    })
+      })
+    await browser.close()
+    return results
+  } catch (error) {
+    throw error
+  }
+
   // await page
   //   .$$eval('.resultsarchive-table tbody tr', (rows) =>
   //     rows.map((row) => ({
@@ -161,13 +153,10 @@ async function scrapeDataRace(year: number) {
   //   // }
   // })
   // console.log(data)
-
-  await browser.close()
-  return results
 }
 async function scrapeDataDriver() {
   /*eslint for-direction: "error"*/
-  for (let year = 2023; year >= 1958; year--) {
+  for (let year = 2023; year >= 2010; year--) {
     const browser = await puppeteer.launch()
     const page = await browser.newPage()
     await page.goto(`https://www.formula1.com/en/results/jcr:content/resultsarchive.html/${year}/drivers.html`)
@@ -214,29 +203,120 @@ async function scrapeDataDriver() {
   }
 }
 async function crawRaceResultByCountry(data: any) {
-  const browser = await puppeteer.launch()
-  const page = await browser.newPage()
-  await page.goto(
-    `https://www.formula1.com/en/results/jcr:content/resultsarchive.html/${
-      data[0].date.split(' ')[data[0].date.split(' ').length - 1]
-    }/races/${data[0].key}/race-result.html`
-  )
-  const selectElements = await page.$$('.resultsarchive-filter-form-select')
+  // eslint-disable-next-line no-useless-catch
+  try {
+    for (const country of data) {
+      if (country.key) {
+        const browser = await puppeteer.launch()
+        const page = await browser.newPage()
+        await page.goto(
+          `https://www.formula1.com/en/results/jcr:content/resultsarchive.html/${
+            country.date.split(' ')[country.date.split(' ').length - 1]
+          }/races/${country.key}/race-result.html`
+        )
+        const selectElements = await page.$$('.resultsarchive-filter-form-select')
+        const dataRaceResult: any[] = []
+        if (selectElements) {
+          const selectElement = selectElements[3]
+          const optionElements = await selectElement.$$('option')
+          const races: raceType[] = []
+          if (optionElements) {
+            for (const optionElement of optionElements) {
+              // const text = await page.evaluate((el) => el.textContent, optionElement)
+              const value = await page.evaluate((el) => el.value, optionElement)
+              races.push({ key: value as string, value: value.replace(new RegExp('-', 'g'), '_') as string })
+            }
+            for (const race of races) {
+              await page.goto(
+                `https://www.formula1.com/en/results/jcr:content/resultsarchive.html/${
+                  country.date.split(' ')[country.date.split(' ').length - 1]
+                }/races/${country.key}/${race.key}.html`
+              )
+              //get colums
+              await page
+                .evaluate(() => {
+                  const table = document.querySelector('.resultsarchive-table')
+                  if (!table) {
+                    throw new Error('Table element not found on the page')
+                  }
+                  const columnHeaders = Array.from(table.querySelectorAll('thead th'))
+                  return columnHeaders.map((header) => (header.textContent ? header.textContent.trim() : ''))
+                })
+                .then(async (res) => {
+                  //get row
+                  const tableRows = await page.$$eval('.resultsarchive-table tbody tr', (rows) => {
+                    return rows.map((row) => {
+                      const columns = Array.from(row.querySelectorAll('td')).map((column) => column.textContent?.trim())
+                      return {
+                        ...columns
+                      }
+                    })
+                  })
 
-  if (selectElements) {
-    const selectElement = selectElements[3]
-    const optionElements = await selectElement.$$('option')
+                  for (const tableRow of tableRows) {
+                    let temp: { [key: string]: number | string | Date } = {}
+                    for (let index = 1; index < res.length - 1; index++) {
+                      temp = {
+                        ...temp,
+                        [`${res[index].toLowerCase().replace(/[-\s/]/g, '_')}`]:
+                          tableRow[`${index}`]?.replace(/\n\s+/g, ' ') || 0
+                      }
+                    }
+                    if (race.key === 'race-result') {
+                      if (!dataRaceResult.find((data) => data.no == temp.no)) {
+                        temp = {
+                          ...temp,
+                          ['date_time']: new Date(country.date),
+                          ['country']: country.grandPrix
+                        }
+                        dataRaceResult.push(temp)
+                      }
+                      // dataRaceResult[`${race}`]=data.y
+                    } else if (race.key === 'pit-stop-summary') {
+                      const result = dataRaceResult.find((data) => data.no == temp.no)
+                      if (result) {
+                        if (!result.pit_stop_summary) {
+                          result.pit_stop_summary = [temp]
+                        } else {
+                          result.pit_stop_summary.push(temp)
+                        }
+                      }
+                    } else {
+                      const result = dataRaceResult.find((data) => data.no == temp.no)
+                      if (result) {
+                        result[`${race.value}`] = temp
+                      }
+                    }
+                  }
 
-    for (const optionElement of optionElements) {
-      const text = await page.evaluate((el) => el.textContent, optionElement)
-      const value = await page.evaluate((el) => el.value, optionElement)
-      let template: { [key: string]: string } = {
-        [`${value.replace(new RegExp('-', 'g'), '_')}`]: '12',
-        hungw: '12'
+                  // console.log(dataRaceResult)
+                  // for (const data of dataRaceResult) {
+                  //   console.log(data)
+                  //   const result = await driverService.find(data.driver)
+                  //   if (result) {
+                  //     data.driver = result._id
+                  //     await raceResultService.create(data)
+                  //   }
+                  // }
+                })
+            }
+          }
+        }
+
+        for (const data of dataRaceResult) {
+          const result = await driverService.find(data.driver)
+          if (result) {
+            data.driver = result._id
+            const insert = await raceResultService.create(data)
+            if (insert) {
+              console.log('Success', data)
+            }
+          }
+        }
       }
-      template = { ...template, [`${value.replace(new RegExp('-', 'g'), '_')}`]: '2' }
-      console.log(template, text, value, data[0].date.split(' ')[data[0].date.split(' ').length - 1])
     }
+  } catch (error) {
+    throw error
   }
 
   // for (const countryIndex in data) {
@@ -321,7 +401,7 @@ async function crawRaceResultByCountry(data: any) {
   //   }
   // }
 
-  return data
+  // return data
 }
 async function crawFastestLapsByCountry(page: Page, res: any, url: string) {
   await page.goto(url)
