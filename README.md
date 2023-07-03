@@ -9,4 +9,11 @@ One day one hour
 - 27/6/2023 Code bóc tách html
 - 28/9/2023 Kiểm tra data phát hiện quy luật đưa ra ngày 26/6/2023 không đúng với mọi năm ==> tìm hiểu lại quy luật giải đấu.
 - 1/7/2023 Tiến hành code fix craw data sau kho craw và check thì vẫn có một số data bị thiếu
-- 2/7/2023 thiết kế api
+- 2/7/2023 thiết kế api xem danh sách tất cả các tay đua theo năm.
+- 3/7/2023
+  [
+  Thiết kế api xem danh sách team tham gia theo năm,
+  Tìm kết quả của giải đua theo năm ở các nước.
+  Tìm kết quả của giải đua theo năm từng các nước.
+  Tìm kết quả thi đấu của từng tay đua theo năm
+  ]
