@@ -24,13 +24,13 @@ class DriverService {
     )
     return result
   }
-  async getDriverInYear(payload: string) {
+  async getDriversInYear(payload: number) {
     const pipeline = [
       {
         $match: {
           date_time: {
-            $gte: new Date('2023-01-01'),
-            $lt: new Date('2024-01-01')
+            $gte: new Date(`${payload}-01-01`),
+            $lt: new Date(`${payload + 1}-01-01'`)
           }
         }
       },
@@ -70,6 +70,42 @@ class DriverService {
     ]
     const drivers = await databaseService.race_results.aggregate<RaceResult>(pipeline).toArray()
     return drivers
+  }
+  async findStandingsByNameOfYear(year: number) {
+    const pipeline = [
+      {
+        $match: {
+          $expr: { $eq: [{ $year: '$date_time' }, year] }
+        }
+      },
+      {
+        $lookup: {
+          from: 'drivers',
+          localField: 'driver',
+          foreignField: '_id',
+          as: 'driver'
+        }
+      },
+      {
+        $project: {
+          _id: 0, // Exclude the _id field if desired
+          no: 1,
+          'driver.driver': 1,
+          car: 1,
+          laps: 1,
+          time_retired: 1,
+          pts: 1,
+          country: 1
+        }
+      }
+    ]
+    try {
+      const result = await databaseService.race_results.aggregate<RaceResult>(pipeline).toArray()
+      // const rankedDrivers = result.map((result) => new RaceResult(result as any))
+      return result
+    } catch (error) {
+      console.log(error)
+    }
   }
 }
 const driverService = new DriverService()

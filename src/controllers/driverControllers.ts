@@ -1,7 +1,5 @@
 import { Request, Response, NextFunction } from 'express'
-import puppeteer from 'puppeteer'
-import axios from 'axios'
-import teamService from '~/services/driver.services'
+import { RaceResultType } from '~/models/schemas/RaceResults.schemas'
 import driverService from '~/services/driver.services'
 import raceResultService from '~/services/raceResult.service'
 export const getDriverController = async (req: Request, res: Response, next: NextFunction) => {
@@ -18,34 +16,68 @@ export const getDriverController = async (req: Request, res: Response, next: Nex
     console.log(error)
     throw error
   }
-  // const browser = await puppeteer.launch()
-  // const page = await browser.newPage()
-  // await page.goto(`https://www.formula1.com/en/results/jcr:content/resultsarchive.html/2023/drivers.html`)
-  // // Định vị phần tử <select> bằng CSS selector
-  // const selectElements = await page.$$('.resultsarchive-filter-form-select')
-
-  // // Lấy các giá trị trong phần tử <select>
-  // if (selectElements) {
-  //   for (const selectElement of selectElements) {
-  //     const optionElements = await selectElement.$$('option')
-  //     for (const optionElement of optionElements) {
-  //       const text = await page.evaluate((el) => el.textContent, optionElement)
-  //       console.log(text)
-  //     }
-  //   }
-  // }
-  // await browser.close()
 }
 export const getDriverByYear = async (req: Request, res: Response, next: NextFunction) => {
   const year = req.params.year || 2023
   // eslint-disable-next-line no-useless-catch
   try {
-    const result = await driverService.getDriverInYear('2023')
+    const result = await driverService.getDriversInYear(Number(year))
+    // const driversByCountry: Record<string, RaceResultType[]> = {} // Object to store drivers grouped by country
+
+    // result.forEach((result: RaceResultType | any) => {
+    //   if (driversByCountry[result.country]) {
+    //     driversByCountry[result.country].push(result)
+    //   } else {
+    //     driversByCountry[result.country] = [result]
+    //   }
+    // })
+
+    // for (const country in driversByCountry) {
+    //   driversByCountry[country].sort((a, b) => b.pts - a.pts) // Sort drivers in descending order based on pts
+    //   driversByCountry[country].forEach((driver, index) => {
+    //     driver.no = index + 1 // Assign a sequential number to each driver
+    //   })
+    // }
+
+    // console.log(driversByCountry)
     res.status(200).json({
       message: 'Success',
       data: result
     })
   } catch (error) {
     throw error
+  }
+}
+export const getStandingsByNameOfYear = async (req: Request, res: Response, next: NextFunction) => {
+  const year = req.params.year || 2023
+  let name = req.params.name || ''
+  name = name.replace(new RegExp('-', 'g'), ' ')
+  try {
+    const result = await driverService.findStandingsByNameOfYear(Number(year))
+    const driversByCountry: Record<string, RaceResultType[] | any[]> = {} // Object to store drivers grouped by country
+    result?.forEach((result: RaceResultType | any) => {
+      if (driversByCountry[result.country]) {
+        driversByCountry[result.country].push(result)
+      } else {
+        driversByCountry[result.country] = [result]
+      }
+    })
+
+    for (const country in driversByCountry) {
+      driversByCountry[country].sort((a, b) => b.pts - a.pts) // Sort drivers in descending order based on pts
+      driversByCountry[country].forEach((driver, index) => {
+        driver.no = index + 1 // Assign a sequential number to each driver
+      })
+    }
+    const data = Object.values(driversByCountry)
+      .flat()
+      .filter((res) => res.driver[0].driver == name)
+    res.status(200).json({
+      message: 'success',
+      data
+    })
+  } catch {
+    res.status(404)
+    return next(new Error('Error'))
   }
 }
