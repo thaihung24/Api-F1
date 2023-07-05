@@ -1,10 +1,7 @@
 import express from 'express'
-import { getAllRaceResultsOfYear, getRaceResultOfYearByCountry } from '~/controllers/raceControllers'
+import { getNameRacesOfYearByCountry } from '~/controllers/raceControllers'
 
 const router = express.Router()
 
-router.route('/').get(getAllRaceResultsOfYear)
-
-router.route('/:year').get(getAllRaceResultsOfYear)
-router.route('/:year/:country').get(getRaceResultOfYearByCountry)
+router.route('/:year/:country').get(getNameRacesOfYearByCountry)
 export default router

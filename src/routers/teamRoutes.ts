@@ -1,5 +1,5 @@
-import express, { Request, Response, NextFunction } from 'express'
-import { getStandingsOfTeamsByYear } from '~/controllers/raceControllers'
+import express from 'express'
+import { getStandingsOfTeamsByYear } from '~/controllers/raceResultControllers'
 const router = express.Router()
 
 router.route('/').get(getStandingsOfTeamsByYear)
