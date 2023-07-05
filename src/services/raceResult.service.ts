@@ -1,8 +1,21 @@
 import RaceResult, { RaceResultType } from '~/models/schemas/RaceResults.schemas'
+import redis, { RedisClient } from 'redis'
 import databaseService from './database.services'
 import { ObjectId } from 'mongodb'
+interface Config {
+  host: string
+  port: number
+}
 
 class RaceResultService {
+  private _client: RedisClient
+  constructor() {
+    const config: Config = {
+      host: process.env.REDIS_HOST || process.env.IP || '127.0.0.1',
+      port: process.env.REDIS_PORT ? parseInt(process.env.REDIS_PORT) : 6379
+    }
+    this._client = redis.createClient(config)
+  }
   async find(payload: string) {
     const result = await databaseService.race_results.find({ payload })
     return result
@@ -13,16 +26,30 @@ class RaceResultService {
   }
   async findByDriverId(payload: string) {
     try {
-      const result = databaseService.race_results
-        .find({
-          driver: new ObjectId(payload) as any,
-          dateTime: { $gte: new Date('2016-01-01T00:00:00.000Z'), $lt: new Date('2017-01-01T00:00:00.000Z') }
-          // stating_grid: { $ne: null }
+      const key = `findDriverById-${payload}`
+      const client = this._client
+      return new Promise((resolve, reject) => {
+        client.get(key, (err, reply) => {
+          if (err) {
+            reject(err)
+            return
+          }
+          if (reply === null) {
+            console.log('Cache miss: ' + key)
+            const result = databaseService.race_results
+              .find({
+                driver: new ObjectId(payload) as any
+                // stating_grid: { $ne: null }
+              })
+              .toArray()
+            client.set(key, JSON.stringify(result))
+            resolve(result)
+          } else {
+            console.log('Cache hit: ' + key)
+            resolve(JSON.parse(reply))
+          }
         })
-        .toArray()
-      return result
-
-      // return result
+      })
     } catch (error) {
       console.error('Error finding driver by ID:', error)
       throw error
@@ -31,39 +58,51 @@ class RaceResultService {
 
   // tìm bảng xếp hạng của các team theo năm
   async findStandingOfTeamsByYear(year: number) {
-    try {
-      const pipeline = [
-        {
-          $match: {
-            date_time: {
-              $gte: new Date(`${year}-01-01`),
-              $lt: new Date(`${year + 1}-01-01'`)
-            }
-          }
-        },
-        {
-          $addFields: {
-            convertedQty: { $toInt: '$pts' }
-          }
-        },
-        {
-          $group: {
-            _id: '$car',
-            totalPoints: { $sum: '$convertedQty' }
-          }
-        },
-        {
-          $sort: {
-            totalPoints: -1
-          }
+    const key = `findStandingOfTeamsByYear-${year}`
+    const client = this._client
+    return new Promise((resolve, reject) => {
+      client.get(key, async (err, reply) => {
+        if (err) {
+          reject(err)
+          return
         }
-      ]
-      const result = await databaseService.race_results.aggregate<RaceResult>(pipeline).toArray()
-      return result
-    } catch (error) {
-      console.error('Error finding driver by ID:', error)
-      throw error
-    }
+        if (reply === null) {
+          console.log('Cache miss: ' + key)
+          const pipeline = [
+            {
+              $match: {
+                date_time: {
+                  $gte: new Date(`${year}-01-01`),
+                  $lt: new Date(`${year + 1}-01-01'`)
+                }
+              }
+            },
+            {
+              $addFields: {
+                convertedQty: { $toInt: '$pts' }
+              }
+            },
+            {
+              $group: {
+                _id: '$car',
+                totalPoints: { $sum: '$convertedQty' }
+              }
+            },
+            {
+              $sort: {
+                totalPoints: -1
+              }
+            }
+          ]
+          const result = await databaseService.race_results.aggregate<RaceResult>(pipeline).toArray()
+          client.set(key, JSON.stringify(result))
+          resolve(result)
+        } else {
+          console.log('Cache hit: ' + key)
+          resolve(JSON.parse(reply))
+        }
+      })
+    })
   }
 
   //Tìm kết quả chung cuộc của giải đua theo năm ở các nước.

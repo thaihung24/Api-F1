@@ -18,7 +18,7 @@ const crawDriverController = async () => {
   // craw data race sine 2023 -->1958
 
   //eslint-disable-next-line for-direction
-  for (let year = 2011; year >= 2001; year--) {
+  for (let year = 1960; year >= 1958; year--) {
     scrapeDataRace(year)
       .then((data) => {
         return crawRaceResultByCountry(data)

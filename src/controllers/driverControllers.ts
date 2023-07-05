@@ -17,29 +17,19 @@ export const getDriverController = async (req: Request, res: Response, next: Nex
     throw error
   }
 }
+export const getDriverById = async (req: Request, res: Response, next: NextFunction) => {
+  const id = req.params.id
+  const data = await raceResultService.findByDriverId(id)
+  res.json({
+    message: 'success',
+    data
+  })
+}
 export const getDriverByYear = async (req: Request, res: Response, next: NextFunction) => {
   const year = req.params.year || 2023
   // eslint-disable-next-line no-useless-catch
   try {
     const result = await driverService.getDriversInYear(Number(year))
-    // const driversByCountry: Record<string, RaceResultType[]> = {} // Object to store drivers grouped by country
-
-    // result.forEach((result: RaceResultType | any) => {
-    //   if (driversByCountry[result.country]) {
-    //     driversByCountry[result.country].push(result)
-    //   } else {
-    //     driversByCountry[result.country] = [result]
-    //   }
-    // })
-
-    // for (const country in driversByCountry) {
-    //   driversByCountry[country].sort((a, b) => b.pts - a.pts) // Sort drivers in descending order based on pts
-    //   driversByCountry[country].forEach((driver, index) => {
-    //     driver.no = index + 1 // Assign a sequential number to each driver
-    //   })
-    // }
-
-    // console.log(driversByCountry)
     res.status(200).json({
       message: 'Success',
       data: result
