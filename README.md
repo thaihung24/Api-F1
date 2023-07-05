@@ -17,3 +17,4 @@ One day one hour
   Tìm kết quả của giải đua theo năm từng các nước.
   Tìm kết quả thi đấu của từng tay đua theo năm
   ]
+- 5/7/2023 update api , Tích hợp redis tối ưu trải nghiệm người dùng.
