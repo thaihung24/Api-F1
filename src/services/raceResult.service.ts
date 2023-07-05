@@ -66,7 +66,7 @@ class RaceResultService {
     }
   }
 
-  //Tìm kết quả của giải đua theo năm ở các nước.
+  //Tìm kết quả chung cuộc của giải đua theo năm ở các nước.
   async findRaceResultsOfYear(year: number) {
     // eslint-disable-next-line no-useless-catch
     try {
@@ -130,6 +130,7 @@ class RaceResultService {
       throw error
     }
   }
+  //Tìm kết quả chung cuộc của giải đua theo năm ở một nước.
   async findRaceResultsOfYearByCountry(year: number, country: string) {
     const pipeline = [
       {
@@ -172,6 +173,32 @@ class RaceResultService {
 
     return result
   }
+
+  //Tìm kết quả của từng giải phụ theo năm ở một nước.
+  // ví dụ ở vào năm 2023 ở BAHRAIN có các giải phụ như FASTEST LAPS, STARTING GRID
+  async findRaceResultByNameOfYearByCountry(year: number, country: string, race: string) {
+    const pipeline = [
+      {
+        $match: {
+          $expr: { $eq: [{ $year: '$date_time' }, year] },
+          country: country
+        }
+      },
+      {
+        $sort: {
+          [`${race}.pos`]: 1
+        }
+      },
+      {
+        $project: {
+          [`${race}`]: 1
+        }
+      }
+    ]
+    const result = await databaseService.race_results.aggregate<RaceResult>(pipeline).toArray()
+    return result
+  }
 }
+
 const raceResultService = new RaceResultService()
 export default raceResultService

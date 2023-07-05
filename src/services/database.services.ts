@@ -1,8 +1,8 @@
 import { Collection, Db, MongoClient, ServerApiVersion } from 'mongodb'
 import dotenv from 'dotenv'
-import Team from '~/models/schemas/Teams.schemas'
 import Driver from '~/models/schemas/Drivers.schemas'
 import RaceResult from '~/models/schemas/RaceResults.schemas'
+import Races from '~/models/schemas/Races.schemas'
 dotenv.config()
 const uri = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@f1.hmmi0fz.mongodb.net/?retryWrites=true&w=majority`
 console.log(uri)
@@ -38,6 +38,9 @@ class DatabaseService {
   }
   get race_results(): Collection<RaceResult> {
     return this.db.collection('race_results')
+  }
+  get races(): Collection<Races> {
+    return this.db.collection('races')
   }
 }
 //Tao object tu class DatabaseService
