@@ -8,6 +8,7 @@ class CacheService {
     const config: ClientOpts = {
       _url: process.env.REDIS_URL ? process.env.REDIS_URL : 'redis://red-cij8i659aq01qqgvnmvg:6379'
     }
+    console.log(process.env.REDIS_URL ? process.env.REDIS_URL : 'redis://red-cij8i659aq01qqgvnmvg:6379')
     this._client = redis.createClient(config)
   }
   // eslint-disable-next-line @typescript-eslint/ban-types
