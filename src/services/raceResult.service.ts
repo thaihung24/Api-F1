@@ -2,20 +2,8 @@ import RaceResult, { RaceResultType } from '~/models/schemas/RaceResults.schemas
 import redis, { RedisClient } from 'redis'
 import databaseService from './database.services'
 import { ObjectId } from 'mongodb'
-interface Config {
-  host: string
-  port: number
-}
 
 class RaceResultService {
-  private _client: RedisClient
-  constructor() {
-    const config: Config = {
-      host: process.env.REDIS_HOST || process.env.IP || '127.0.0.1',
-      port: process.env.REDIS_PORT ? parseInt(process.env.REDIS_PORT) : 6379
-    }
-    this._client = redis.createClient(config)
-  }
   async find(payload: string) {
     const result = await databaseService.race_results.find({ payload })
     return result
@@ -25,35 +13,13 @@ class RaceResultService {
     return result
   }
   async findByDriverId(payload: string) {
-    try {
-      const key = `findDriverById-${payload}`
-      const client = this._client
-      return new Promise((resolve, reject) => {
-        client.get(key, (err, reply) => {
-          if (err) {
-            reject(err)
-            return
-          }
-          if (reply === null) {
-            console.log('Cache miss: ' + key)
-            const result = databaseService.race_results
-              .find({
-                driver: new ObjectId(payload) as any
-                // stating_grid: { $ne: null }
-              })
-              .toArray()
-            client.set(key, JSON.stringify(result))
-            resolve(result)
-          } else {
-            console.log('Cache hit: ' + key)
-            resolve(JSON.parse(reply))
-          }
-        })
+    const result = databaseService.race_results
+      .find({
+        driver: new ObjectId(payload) as any
+        // stating_grid: { $ne: null }
       })
-    } catch (error) {
-      console.error('Error finding driver by ID:', error)
-      throw error
-    }
+      .toArray()
+    return result
   }
 
   // tìm bảng xếp hạng của các team theo năm
