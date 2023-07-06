@@ -6,7 +6,7 @@ class CacheService {
   private _client: RedisClient
   constructor() {
     const config: ClientOpts = {
-      _url: process.env.REDIS_URL ? process.env.REDIS_URL : '127.0.0.1'
+      _url: process.env.REDIS_URL ? process.env.REDIS_URL : 'redis://red-cij8i659aq01qqgvnmvg:6379'
     }
     this._client = redis.createClient(config)
   }
