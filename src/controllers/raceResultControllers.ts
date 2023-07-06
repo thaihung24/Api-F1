@@ -27,7 +27,7 @@ export const getStandingsOfTeamsByYear = async (req: Request, res: Response, nex
     }
   } catch (error) {
     res.status(404)
-    throw new Error('Error')
+    return next(new Error('Error'))
   }
 }
 //Tìm kết quả chung cuộc của giải đua theo năm ở các nước.

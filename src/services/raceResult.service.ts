@@ -1,5 +1,4 @@
 import RaceResult, { RaceResultType } from '~/models/schemas/RaceResults.schemas'
-import redis, { RedisClient } from 'redis'
 import databaseService from './database.services'
 import { ObjectId } from 'mongodb'
 
