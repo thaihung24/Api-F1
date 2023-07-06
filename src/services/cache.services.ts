@@ -1,20 +1,19 @@
-import redis, { RedisClient } from 'redis'
-interface Config {
-  host: string
-  port: number
-}
+import redis, { RedisClient, ClientOpts, createClient } from 'redis'
+import dotenv from 'dotenv'
+dotenv.config()
+
 class CacheService {
   private _client: RedisClient
   constructor() {
-    const config: Config = {
-      host: process.env.REDIS_HOST || process.env.IP || '127.0.0.1',
-      port: process.env.REDIS_PORT ? parseInt(process.env.REDIS_PORT) : 6379
+    const config: ClientOpts = {
+      _url: process.env.REDIS_URL ? process.env.REDIS_URL : '127.0.0.1'
     }
     this._client = redis.createClient(config)
   }
   // eslint-disable-next-line @typescript-eslint/ban-types
   async getCacheByKey(key: string, boundFunction: Function) {
     const client = this._client
+    // const client = this._client
     return new Promise((resolve, reject) => {
       client.get(key, async (err, reply) => {
         if (err) {

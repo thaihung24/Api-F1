@@ -9,6 +9,7 @@ declare module 'redis' {
   }
 
   interface ClientOpts {
+    _url: string
     // Declare the ClientOpts properties here
     // Example:
     host?: string
