@@ -1,5 +1,6 @@
 declare module 'redis' {
   interface RedisClient {
+    expire(key: string, arg1: number, arg2: (err: any, reply: any) => void): unknown
     // Declare the RedisClient properties and methods here
     // Example:
     get(key: string, callback?: (err: Error | null, reply: string | null) => void): void
