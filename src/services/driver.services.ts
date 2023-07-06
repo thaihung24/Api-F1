@@ -1,7 +1,7 @@
 import Driver, { driverType } from '~/models/schemas/Drivers.schemas'
 import databaseService from './database.services'
 import { ObjectId } from 'mongodb'
-import RaceResult from '~/models/schemas/RaceResults.schemas'
+import RaceResult, { RaceResultType } from '~/models/schemas/RaceResults.schemas'
 
 class DriverService {
   async find(payload: string) {
@@ -24,20 +24,17 @@ class DriverService {
     )
     return result
   }
-  async getDriversInYear(payload: number) {
+  async getDriversInYear(year: number) {
     const pipeline = [
       {
         $match: {
-          date_time: {
-            $gte: new Date(`${payload}-01-01`),
-            $lt: new Date(`${payload + 1}-01-01'`)
-          }
+          $expr: { $eq: [{ $year: '$date_time' }, year] }
         }
       },
 
       {
         $addFields: {
-          convertedQty: { $toInt: '$pts' }
+          convertedQty: { $toDouble: '$pts' }
         }
       },
       {
@@ -71,7 +68,7 @@ class DriverService {
     const drivers = await databaseService.race_results.aggregate<RaceResult>(pipeline).toArray()
     return drivers
   }
-  async findStandingsByNameOfYear(year: number) {
+  async findStandingsByNameOfYear(year: number, name: string) {
     const pipeline = [
       {
         $match: {
@@ -102,7 +99,25 @@ class DriverService {
     try {
       const result = await databaseService.race_results.aggregate<RaceResult>(pipeline).toArray()
       // const rankedDrivers = result.map((result) => new RaceResult(result as any))
-      return result
+      const driversByCountry: Record<string, RaceResultType[] | any[]> = {} // Object to store drivers grouped by country
+      result?.forEach((result: RaceResultType | any) => {
+        if (driversByCountry[result.country]) {
+          driversByCountry[result.country].push(result)
+        } else {
+          driversByCountry[result.country] = [result]
+        }
+      })
+
+      for (const country in driversByCountry) {
+        driversByCountry[country].sort((a, b) => b.pts - a.pts) // Sort drivers in descending order based on pts
+        driversByCountry[country].forEach((driver, index) => {
+          driver.no = index + 1 // Assign a sequential number to each driver
+        })
+      }
+      const data = Object.values(driversByCountry)
+        .flat()
+        .filter((res) => res.driver[0].driver == name)
+      return data
     } catch (error) {
       console.log(error)
     }

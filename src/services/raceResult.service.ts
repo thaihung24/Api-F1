@@ -58,51 +58,34 @@ class RaceResultService {
 
   // tìm bảng xếp hạng của các team theo năm
   async findStandingOfTeamsByYear(year: number) {
-    const key = `findStandingOfTeamsByYear-${year}`
-    const client = this._client
-    return new Promise((resolve, reject) => {
-      client.get(key, async (err, reply) => {
-        if (err) {
-          reject(err)
-          return
+    const pipeline = [
+      {
+        $match: {
+          date_time: {
+            $gte: new Date(`${year}-01-01`),
+            $lt: new Date(`${year + 1}-01-01'`)
+          }
         }
-        if (reply === null) {
-          console.log('Cache miss: ' + key)
-          const pipeline = [
-            {
-              $match: {
-                date_time: {
-                  $gte: new Date(`${year}-01-01`),
-                  $lt: new Date(`${year + 1}-01-01'`)
-                }
-              }
-            },
-            {
-              $addFields: {
-                convertedQty: { $toInt: '$pts' }
-              }
-            },
-            {
-              $group: {
-                _id: '$car',
-                totalPoints: { $sum: '$convertedQty' }
-              }
-            },
-            {
-              $sort: {
-                totalPoints: -1
-              }
-            }
-          ]
-          const result = await databaseService.race_results.aggregate<RaceResult>(pipeline).toArray()
-          client.set(key, JSON.stringify(result))
-          resolve(result)
-        } else {
-          console.log('Cache hit: ' + key)
-          resolve(JSON.parse(reply))
+      },
+      {
+        $addFields: {
+          convertedQty: { $toDouble: '$pts' }
         }
-      })
-    })
+      },
+      {
+        $group: {
+          _id: '$car',
+          totalPoints: { $sum: '$convertedQty' }
+        }
+      },
+      {
+        $sort: {
+          totalPoints: -1
+        }
+      }
+    ]
+    const result = await databaseService.race_results.aggregate<RaceResult>(pipeline).toArray()
+    return result
   }
 
   //Tìm kết quả chung cuộc của giải đua theo năm ở các nước.
@@ -117,7 +100,7 @@ class RaceResultService {
         },
         {
           $addFields: {
-            convertedPTS: { $toInt: '$pts' }
+            convertedPTS: { $toDouble: '$pts' }
           }
         },
         {
@@ -180,7 +163,7 @@ class RaceResultService {
       },
       {
         $addFields: {
-          convertedPTS: { $toInt: '$pts' }
+          convertedPTS: { $toDouble: '$pts' }
         }
       },
       {
