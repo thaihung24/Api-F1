@@ -241,83 +241,83 @@ async function crawRaceResultByCountry(data: any) {
               race_name: races.map((race) => ({ key: race.key, value: race.value, text: race.text })),
               date_time: new Date(country.date)
             })
-            // for (const race of races) {
-            // console.log('race', race)
-            // await page.goto(
-            //   `https://www.formula1.com/en/results/jcr:content/resultsarchive.html/${
-            //     country.date.split(' ')[country.date.split(' ').length - 1]
-            //   }/races/${country.key}/${race.key}.html`
-            // )
-            //get colums
-            // await page
-            //   .evaluate(() => {
-            //     const table = document.querySelector('.resultsarchive-table')
-            //     if (!table) {
-            //       throw new Error('Table element not found on the page')
-            //     }
-            //     const columnHeaders = Array.from(table.querySelectorAll('thead th'))
-            //     return columnHeaders.map((header) => (header.textContent ? header.textContent.trim() : ''))
-            //   })
-            //   .then(async (res) => {
-            //     //get row
-            //     const tableRows = await page.$$eval('.resultsarchive-table tbody tr', (rows) => {
-            //       return rows.map((row) => {
-            //         const columns = Array.from(row.querySelectorAll('td')).map((column) => column.textContent?.trim())
-            //         return {
-            //           ...columns
-            //         }
-            //       })
-            //     })
-            //     for (const tableRow of tableRows) {
-            //       let temp: { [key: string]: number | string | Date } = {}
-            //       for (let index = 1; index < res.length - 1; index++) {
-            //         temp = {
-            //           ...temp,
-            //           [`${res[index].toLowerCase().replace(/[-\s/]/g, '_')}`]:
-            //             tableRow[`${index}`]?.replace(/\n\s+/g, ' ') || 0
-            //         }
-            //       }
-            //       if (race.key === 'race-result') {
-            //         if (!dataRaceResult.find((data) => data.no == temp.no)) {
-            //           temp = {
-            //             ...temp,
-            //             ['date_time']: new Date(country.date),
-            //             ['country']: country.grandPrix
-            //           }
-            //           dataRaceResult.push(temp)
-            //         }
-            //         // dataRaceResult[`${race}`]=data.y
-            //       } else if (race.key === 'pit-stop-summary') {
-            //         const result = dataRaceResult.find((data) => data.no == temp.no)
-            //         if (result) {
-            //           if (!result.pit_stop_summary) {
-            //             result.pit_stop_summary = [temp]
-            //           } else {
-            //             result.pit_stop_summary.push(temp)
-            //           }
-            //         }
-            //       } else {
-            //         const result = dataRaceResult.find((data) => data.no == temp.no)
-            //         if (result) {
-            //           result[`${race.value}`] = temp
-            //         }
-            //       }
-            //     }
-            //   })
-            // }
+            for (const race of races) {
+              console.log('race', race)
+              await page.goto(
+                `https://www.formula1.com/en/results/jcr:content/resultsarchive.html/${
+                  country.date.split(' ')[country.date.split(' ').length - 1]
+                }/races/${country.key}/${race.key}.html`
+              )
+              // get colums
+              await page
+                .evaluate(() => {
+                  const table = document.querySelector('.resultsarchive-table')
+                  if (!table) {
+                    throw new Error('Table element not found on the page')
+                  }
+                  const columnHeaders = Array.from(table.querySelectorAll('thead th'))
+                  return columnHeaders.map((header) => (header.textContent ? header.textContent.trim() : ''))
+                })
+                .then(async (res) => {
+                  //get row
+                  const tableRows = await page.$$eval('.resultsarchive-table tbody tr', (rows) => {
+                    return rows.map((row) => {
+                      const columns = Array.from(row.querySelectorAll('td')).map((column) => column.textContent?.trim())
+                      return {
+                        ...columns
+                      }
+                    })
+                  })
+                  for (const tableRow of tableRows) {
+                    let temp: { [key: string]: number | string | Date } = {}
+                    for (let index = 1; index < res.length - 1; index++) {
+                      temp = {
+                        ...temp,
+                        [`${res[index].toLowerCase().replace(/[-\s/]/g, '_')}`]:
+                          tableRow[`${index}`]?.replace(/\n\s+/g, ' ') || 0
+                      }
+                    }
+                    if (race.key === 'race-result') {
+                      if (!dataRaceResult.find((data) => data.no == temp.no)) {
+                        temp = {
+                          ...temp,
+                          ['date_time']: new Date(country.date),
+                          ['country']: country.grandPrix
+                        }
+                        dataRaceResult.push(temp)
+                      }
+                      // dataRaceResult[`${race}`]=data.y
+                    } else if (race.key === 'pit-stop-summary') {
+                      const result = dataRaceResult.find((data) => data.no == temp.no)
+                      if (result) {
+                        if (!result.pit_stop_summary) {
+                          result.pit_stop_summary = [temp]
+                        } else {
+                          result.pit_stop_summary.push(temp)
+                        }
+                      }
+                    } else {
+                      const result = dataRaceResult.find((data) => data.no == temp.no)
+                      if (result) {
+                        result[`${race.value}`] = temp
+                      }
+                    }
+                  }
+                })
+            }
           }
         }
         // insert into race_results schemas
-        // for (const data of dataRaceResult) {
-        //   const result = await driverService.find(data.driver)
-        //   if (result) {
-        //     data.driver = result._id
-        //     const insert = await raceResultService.create(data)
-        //     // if (insert) {
-        //     //   console.log('Success', country.date)
-        //     // }
-        //   }
-        // }
+        for (const data of dataRaceResult) {
+          const result = await driverService.find(data.driver)
+          if (result) {
+            data.driver = result._id
+            const insert = await raceResultService.create(data)
+            // if (insert) {
+            //   console.log('Success', country.date)
+            // }
+          }
+        }
       }
     }
     return data[0]?.date
