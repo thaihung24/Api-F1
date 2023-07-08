@@ -15,13 +15,15 @@ export const getNameRacesOfYearByCountry = async (req: Request, res: Response, n
         raceService.findNameRacesOfYearByCountry.bind(raceService, Number(year), country)
       )
       res.status(200).json({
-        message: 'success',
+        cache: true,
+        message: `Tìm danh sách các giải đua phụ năm ${year} ở  địa điểm đua ${country}`,
         data
       })
     } else {
       const data = await raceService.findNameRacesOfYearByCountry(Number(year), country)
       res.status(200).json({
-        message: 'success',
+        cache: false,
+        message: `Tìm danh sách các giải đua phụ năm ${year} ở  địa điểm đua ${country}`,
         data
       })
     }

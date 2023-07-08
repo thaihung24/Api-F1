@@ -15,13 +15,15 @@ export const getDriverByYear = async (req: Request, res: Response, next: NextFun
         driverService.getDriversInYear.bind(driverService, Number(year))
       )
       res.status(200).json({
-        message: 'Success',
+        cache: true,
+        message: `xem danh sách tất cả các tay đua theo năm ${year}`,
         data: result
       })
     } else {
       const result = await driverService.getDriversInYear(Number(year))
       res.status(200).json({
-        message: 'Success',
+        cache: false,
+        message: `xem danh sách tất cả các tay đua theo năm ${year}`,
         data: result
       })
     }
@@ -41,13 +43,15 @@ export const getStandingsByNameOfYear = async (req: Request, res: Response, next
         driverService.findStandingsByNameOfYear.bind(driverService, Number(year), name)
       )
       res.status(200).json({
-        message: 'success',
+        cache: true,
+        message: `kết quả thi đấu của tay đua ${name} năm ${year}`,
         data
       })
     } else {
       const data = await driverService.findStandingsByNameOfYear(Number(year), name)
       res.status(200).json({
-        message: 'success',
+        cache: false,
+        message: `kết quả thi đấu của tay đua ${name} năm ${year}`,
         data
       })
     }

@@ -15,14 +15,14 @@ export const getStandingsOfTeamsByYear = async (req: Request, res: Response, nex
       )
       res.status(200).json({
         cache: true,
-        massage: 'success',
+        massage: `Kết quả thi đấu của các team tham gia năm ${year}`,
         data
       })
     } else {
       const data = await raceResultService.findStandingOfTeamsByYear(Number(year))
       res.status(200).json({
         cache: false,
-        massage: 'success',
+        massage: `Kết quả thi đấu của các team tham gia năm ${year}`,
         data
       })
     }
@@ -45,7 +45,7 @@ export const getStandingOfYearByTeam = async (req: Request, res: Response, next:
       )
       res.status(200).json({
         cache: true,
-        massage: 'success',
+        massage: `Kết quả thi đấu của team ${team}  năm ${year}`,
         data
       })
     } else {
@@ -53,7 +53,7 @@ export const getStandingOfYearByTeam = async (req: Request, res: Response, next:
       const data = await raceResultService.findRaceResultOfYearByTeam(Number(year), team)
       res.status(200).json({
         cache: false,
-        massage: 'success',
+        massage: `Kết quả thi đấu của team ${team}  năm ${year}`,
         data
       })
     }
@@ -75,13 +75,14 @@ export const getAllRaceResultsOfYear = async (req: Request, res: Response, next:
       )
       res.status(200).json({
         cache: true,
-        message: 'sucess',
+        message: `kết quả chung cuộc của giải đua năm ${year} ở các nước.`,
         data
       })
     } else {
       const data = await raceResultService.findRaceResultsOfYear(Number(year))
       res.status(200).json({
-        message: 'sucess',
+        cache: false,
+        message: `kết quả chung cuộc của giải đua năm ${year} ở các nước.`,
         data
       })
     }
@@ -103,14 +104,14 @@ export const getRaceResultOfYearByCountry = async (req: Request, res: Response, 
       )
       res.status(200).json({
         cache: true,
-        message: 'success',
+        message: `Kết quả của giải đua năm ${year} ở  nước ${country}.`,
         data
       })
     } else {
       const data = await raceResultService.findRaceResultsOfYearByCountry(Number(year), country)
       res.status(200).json({
         cache: false,
-        message: 'success',
+        message: `Kết quả của giải đua năm ${year} ở  nước ${country}.`,
         data
       })
     }
@@ -134,13 +135,14 @@ export const getRaceResultByNameOfYearByCountry = async (req: Request, res: Resp
       )
       res.status(200).json({
         cache: true,
-        message: 'success',
+        message: `Kết quả của giải đua phụ ${nameRace} năm ${year} ở ${country}. `,
         data
       })
     } else {
       const data = await raceResultService.findRaceResultByNameOfYearByCountry(Number(year), country, nameRace)
       res.status(200).json({
-        message: 'success',
+        cache: false,
+        message: `Kết quả của giải đua phụ ${nameRace} năm ${year} ở ${country}. `,
         data
       })
     }
@@ -163,13 +165,14 @@ export const getFastestLapAwardOfYear = async (req: Request, res: Response, next
       )
       res.status(200).json({
         cache: true,
-        message: 'success',
+        message: `Kết quả vòng nhanh nhất năm ${year} DHL FASTEST LAP AWARD`,
         data
       })
     } else {
       const data = await raceResultService.findFastestLapAwardOfYear(Number(year))
       res.status(200).json({
-        message: 'success',
+        cache: false,
+        message: `Kết quả vòng nhanh nhất năm ${year} DHL FASTEST LAP AWARD`,
         data
       })
     }
