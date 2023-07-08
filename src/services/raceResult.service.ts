@@ -52,7 +52,53 @@ class RaceResultService {
     const result = await databaseService.race_results.aggregate<RaceResult>(pipeline).toArray()
     return result
   }
+  // tìm thành tích chung cuộc của một team theo năm
+  async findRaceResultOfYearByTeam(year: number, team: string) {
+    // eslint-disable-next-line no-useless-catch
+    try {
+      const pipeline = [
+        {
+          $match: {
+            $expr: { $eq: [{ $year: '$date_time' }, year] },
+            car: team
+          }
+        },
+        {
+          $addFields: {
+            convertedQty: { $toDouble: '$pts' }
+          }
+        },
+        {
+          $group: {
+            _id: {
+              country: '$country',
+              date_time: '$date_time'
+            },
 
+            totalPoints: { $sum: '$convertedQty' }
+          }
+        },
+        {
+          $project: {
+            _id: 0,
+            grand_prix: '$_id.country',
+            date: '$_id.date_time',
+            totalPoints: 1
+          }
+        },
+        {
+          $sort: {
+            date: 1
+          }
+        }
+      ]
+      const result = await databaseService.race_results.aggregate<RaceResult>(pipeline).toArray()
+
+      return result
+    } catch (error) {
+      throw error
+    }
+  }
   //Tìm kết quả chung cuộc của giải đua theo năm ở các nước.
   async findRaceResultsOfYear(year: number) {
     // eslint-disable-next-line no-useless-catch
@@ -179,6 +225,74 @@ class RaceResultService {
       {
         $project: {
           [`${race}`]: 1
+        }
+      }
+    ]
+    const result = await databaseService.race_results.aggregate<RaceResult>(pipeline).toArray()
+    return result
+  }
+
+  //Giải thưởng vòng  nhanh nhất theo năm
+  async findFastestLapAwardOfYear(year: number) {
+    const pipeline = [
+      {
+        $match: {
+          $expr: { $eq: [{ $year: '$date_time' }, year] }
+        }
+      },
+      {
+        $addFields: {
+          convertedAVG: { $toDouble: '$fastest_laps.avg_speed' }
+        }
+      },
+      {
+        $group: {
+          _id: {
+            country: '$country',
+            date_time: '$date_time'
+          },
+          maxAvgSpeed: { $max: '$fastest_laps.avg_speed' }
+        }
+      },
+      {
+        $sort: {
+          '_id.date_time': 1
+        }
+      },
+      {
+        $lookup: {
+          from: 'race_results',
+          let: {
+            country: '$_id.country',
+            date_time: '$_id.date_time',
+            maxAvgSpeed: '$maxAvgSpeed'
+          },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $and: [
+                    { $eq: ['$country', '$$country'] },
+                    { $eq: ['$date_time', '$$date_time'] },
+                    { $gte: ['$fastest_laps.avg_speed', '$$maxAvgSpeed'] }
+                  ]
+                }
+              }
+            }
+          ],
+          as: 'drivers'
+        }
+      },
+      {
+        $unwind: '$drivers'
+      },
+      {
+        $project: {
+          _id: 0,
+          country: '$_id.country',
+          driver: '$drivers.fastest_laps.driver',
+          car: '$drivers.car',
+          time: '$drivers.fastest_laps.time'
         }
       }
     ]

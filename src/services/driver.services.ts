@@ -83,10 +83,10 @@ class DriverService {
           as: 'driver'
         }
       },
+
       {
         $project: {
           _id: 0, // Exclude the _id field if desired
-          no: 1,
           'driver.driver': 1,
           car: 1,
           laps: 1,
@@ -98,6 +98,7 @@ class DriverService {
     ]
     try {
       const result = await databaseService.race_results.aggregate<RaceResult>(pipeline).toArray()
+      // return result
       // const rankedDrivers = result.map((result) => new RaceResult(result as any))
       const driversByCountry: Record<string, RaceResultType[] | any[]> = {} // Object to store drivers grouped by country
       result?.forEach((result: RaceResultType | any) => {
@@ -111,7 +112,7 @@ class DriverService {
       for (const country in driversByCountry) {
         driversByCountry[country].sort((a, b) => b.pts - a.pts) // Sort drivers in descending order based on pts
         driversByCountry[country].forEach((driver, index) => {
-          driver.no = index + 1 // Assign a sequential number to each driver
+          driver.race_position = index + 1 // Assign a sequential number to each driver
         })
       }
       const data = Object.values(driversByCountry)

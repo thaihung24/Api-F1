@@ -4,11 +4,11 @@ import Redis from 'ioredis'
 class CacheService {
   private _client: Redis
   constructor() {
-    this._client = new Redis(process.env.REDIS_URL ? process.env.REDIS_URL : '')
+    this._client = new Redis(process.env.REDIS_URL ? process.env.REDIS_URL : '127.0.0.1')
   }
   // eslint-disable-next-line @typescript-eslint/ban-types
   async getCacheByKey(key: string, boundFunction: Function) {
-    const client = new Redis(process.env.REDIS_URL ? process.env.REDIS_URL : '127.0.0.1')
+    const client = this._client
     return client.get(key).then(async (res) => {
       if (res !== null) {
         console.log('Cache hit ' + key)
