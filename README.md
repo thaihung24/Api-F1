@@ -20,6 +20,8 @@ Và vẫn sẽ gọi đến api # Tìm kết quả của giải đua theo năm �
 
 # Link deploy : https://api-f1-i33j.onrender.com
 
+# link postmand : https://bold-desert-303323.postman.co/workspace/My-Workspace~088d016d-ad13-468f-8a92-2022a05cb2a0/collection/22353900-d58c1c19-49d9-4105-87c4-422a22559c92?action=share&creator=22353900
+
 One day one hour
 
 - 23/6/2023 Tìm hiểu website thiết kế data,
