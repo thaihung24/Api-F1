@@ -214,7 +214,8 @@ class RaceResultService {
       {
         $match: {
           $expr: { $eq: [{ $year: '$date_time' }, year] },
-          country: country
+          country: country,
+          [`${race}`]: { $ne: null }
         }
       },
       {
@@ -241,17 +242,12 @@ class RaceResultService {
         }
       },
       {
-        $addFields: {
-          convertedAVG: { $toDouble: '$fastest_laps.avg_speed' }
-        }
-      },
-      {
         $group: {
           _id: {
             country: '$country',
             date_time: '$date_time'
           },
-          maxAvgSpeed: { $max: '$fastest_laps.avg_speed' }
+          time: { $min: '$fastest_laps.time' }
         }
       },
       {
@@ -265,7 +261,7 @@ class RaceResultService {
           let: {
             country: '$_id.country',
             date_time: '$_id.date_time',
-            maxAvgSpeed: '$maxAvgSpeed'
+            time: '$time'
           },
           pipeline: [
             {
@@ -274,7 +270,7 @@ class RaceResultService {
                   $and: [
                     { $eq: ['$country', '$$country'] },
                     { $eq: ['$date_time', '$$date_time'] },
-                    { $gte: ['$fastest_laps.avg_speed', '$$maxAvgSpeed'] }
+                    { $gte: ['$fastest_laps.time', '$$time'] }
                   ]
                 }
               }
