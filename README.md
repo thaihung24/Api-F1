@@ -1,6 +1,6 @@
 # Api-F1
 
-`*` Giả sử tên các tay đua và các đội sẽ không trùng nhau.
+`*` Giả sử tên các tay đua và các đội sẽ không trùng nhau.</p>
 `*` Cơ sở dữ liêu có 3 bảng,
 Drivers : Lưu danh sách các tay đua tham gia theo từng năm
 Races : Lưu danh sách các thống kê phụ theo từng năm ở từng địa điểm tổ chức thi (fastest laps, pit stop summary , starting grid)
