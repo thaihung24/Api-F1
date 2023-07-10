@@ -42,9 +42,9 @@
 `*` 2/7/2023</p>
 [</p>
 
-https://api-f1-i33j.onrender.com/api/drivers/:year</p>
-
 # api xem danh sách tất cả các tay đua theo năm.</p>
+
+https://api-f1-i33j.onrender.com/api/drivers/:year</p>
 
 ]</p>
 
@@ -52,50 +52,50 @@ https://api-f1-i33j.onrender.com/api/drivers/:year</p>
 `*********** - BẮT ĐẦU 3/7 - ***********`</p>
 [</p>
 
+# Tìm kết quả thi đấu của từng tay đua theo năm</p>
+
 <b> Tên tay đua phải được xử lý trước khi truyền vào.Tất cả các khoản trắng phải được lượt bỏ và thay bằng "-" Ví dụ : Max Verstappen VER ==> Max-Verstappen-VER </b></p>
 
 https://api-f1-i33j.onrender.com/api/drivers/:year/:name</p>
 
-# Tìm kết quả thi đấu của từng tay đua theo năm</p>
+# Tìm kết quả thi đấu của các team tham gia theo năm,</p>
 
 https://api-f1-i33j.onrender.com/api/teams/:year</p>
 
-# Tìm kết quả thi đấu của các team tham gia theo năm,</p>
+# Tìm kết quả thi đấu của 1 team theo năm</p>
 
-<b> Tên tay team phải được xử lý trước khi truyền vào.Tất cả các khoản trắng phải được lượt bỏ và thay bằng "-" Ví dụ : Red Bull Racing Honda ==> Red-Bull-Racing-Honda </b> </p>
+<b> Tên team phải được xử lý trước khi truyền vào.Tất cả các khoản trắng phải được lượt bỏ và thay bằng "-" Ví dụ : Red Bull Racing Honda ==> Red-Bull-Racing-Honda </b> </p>
 
 https://api-f1-i33j.onrender.com/api/:year/:team</p>
 
-# Tìm kết quả thi đấu của 1 team theo năm</p>
+# Tìm kết quả của giải đua theo năm ở các nước.</p>
 
 https://api-f1-i33j.onrender.com/api/raceResults/:year</p>
 
-# Tìm kết quả của giải đua theo năm ở các nước.</p>
+# Tìm kết quả của giải đua theo năm ở một nước.</p>
 
 https://api-f1-i33j.onrender.com/api/raceResults/:year/:country</p>
 
-# Tìm kết quả của giải đua theo năm ở một nước.</p>
-
 ]</p>
-`*********** - BẮT ĐẦU 3/7 - ***********`</p>
+`*********** - KẾT THÚC 3/7 - ***********`</p>
 `*` 5/7/2023</p>
 `*********** - BẮT ĐẦU 5/7 - ***********`</p>
 [</p>
 update api</p>
 
-https://api-f1-i33j.onrender.com/api/races/:country</p>
-
 # Tìm danh sách các giải đua phụ theo năm ở từng địa điểm đua</p>
 
-<b> Khi call lấy được danh sách giải phụ ở một nước, người dùng truyền key của giải phụ muốn xem vào nameRace.<b></p>
-
-https://api-f1-i33j.onrender.com/api/raceResults/:year/:country/:nameRace</p>
+https://api-f1-i33j.onrender.com/api/races/:country</p>
 
 # Tìm kết quả của giải đua phụ theo năm ở một nước. </p>
 
-https://api-f1-i33j.onrender.com/api/raceResults/fastestLap/:year</p>
+<b>Khi call lấy được danh sách giải phụ ở một nước, người dùng truyền key của giải phụ muốn xem vào nameRace.<b></p>
+
+https://api-f1-i33j.onrender.com/api/raceResults/:year/:country/:nameRace</p>
 
 # Kết quả vòng nhanh nhất theo năm DHL FASTEST LAP AWARD</p>
+
+https://api-f1-i33j.onrender.com/api/raceResults/fastestLap/:year</p>
 
 Tích hợp redis tối ưu trải nghiệm người dùng.</p>
 ]
