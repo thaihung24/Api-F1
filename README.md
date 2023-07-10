@@ -1,133 +1,139 @@
 # Api-F1
 
-Giả sử tên các tay đua và các đội sẽ không trùng nhau.
-Cơ sở dữ liêu có 3 bảng,
-Drivers : Lưu danh sách các tay đua tham gia theo từng năm
-Races : Lưu danh sách các thống kê phụ theo từng năm ở từng địa điểm tổ chức thi (fastest laps, pit stop summary , starting grid)
-RaceResults : Lưu kết quả thi đấu của các tay đua theo từng năm ở từng địa điểm
+`*` Giả sử tên các tay đua và các đội sẽ không trùng nhau.</p>
+`*` Cơ sở dữ liêu có 3 bảng,</p>
+`*` Drivers : Lưu danh sách các tay đua tham gia theo từng năm</p>
+`*` Races : Lưu danh sách các thống kê phụ theo từng năm ở từng địa điểm tổ chức thi (fastest laps, pit stop summary , starting grid)</p>
+`*` RaceResults : Lưu kết quả thi đấu của các tay đua theo từng năm ở từng địa điểm</p>
 
-Endpoint: Có dạng link/:thamso/:thamso
-==> Người dùng phải đảm bảo truyền đúng params nếu truyền sai thi api vẫn có thể thực thi nhưng sẽ trả về kết quả khác mong đợi.
-ví dụ https://api-f1-i33j.onrender.com/api/raceResults/:year/:country/:nameRace (api này Tìm kết quả của giải đua phụ nameRace theo năm year ở một nước country. )
-Đảm bảo rằng bạn truyền đúng tham số cần truyền theo thứ tự
-ví dụ https://api-f1-i33j.onrender.com/api/raceResults/2023/Monaco/fastest-laps
-Nếu người dùng không truyền year
-(https://api-f1-i33j.onrender.com/api/raceResults/Monaco/fastest-laps)
-thì api vẫn không báo lỗi
-vì tồn lại một Endpoint có dạng https://api-f1-i33j.onrender.com/api/raceResults/:year/:country
-Lúc này app sẽ tự động hiểu year = Monaco country = fastest-laps
-Và vẫn sẽ gọi đến api # Tìm kết quả của giải đua theo năm ở một nước.#
+`*` Endpoint: Có dạng link/:thamso/:thamso</p>
+`*` ==> Người dùng phải đảm bảo truyền đúng params nếu truyền sai thi api vẫn có thể thực thi nhưng sẽ trả về kết quả khác mong đợi.</p>
+`*` Ví dụ https://api-f1-i33j.onrender.com/api/raceResults/:year/:country/:nameRace (api này Tìm kết quả của giải đua phụ nameRace theo năm year ở một nước country. )</p>
+`*` Đảm bảo rằng bạn truyền đúng tham số cần truyền theo thứ tự</p>
+`*` ví dụ https://api-f1-i33j.onrender.com/api/raceResults/2023/Monaco/fastest-laps</p>
+`*` Nếu người dùng không truyền year</p>
+(https://api-f1-i33j.onrender.com/api/raceResults/Monaco/fastest-laps)</p>
+`*` Thì api vẫn không báo lỗi vì tồn lại một Endpoint có dạng https://api-f1-i33j.onrender.com/api/raceResults/:year/:country</p>
+`*` Lúc này app sẽ tự động hiểu year = Monaco country = fastest-laps</p>
+`*` Và vẫn sẽ gọi đến api # Tìm kết quả của giải đua theo năm ở một nước.</p>
 
-# Link deploy : https://api-f1-i33j.onrender.com
+<b> Link deploy</b> : https://api-f1-i33j.onrender.com </p>
 
-# link postmand : https://bold-desert-303323.postman.co/workspace/My-Workspace~088d016d-ad13-468f-8a92-2022a05cb2a0/collection/22353900-d58c1c19-49d9-4105-87c4-422a22559c92?action=share&creator=22353900
+<b>Link postmand</b>: <a href="https://bold-desert-303323.postman.co/workspace/My-Workspace~088d016d-ad13-468f-8a92-2022a05cb2a0/collection/22353900-d58c1c19-49d9-4105-87c4-422a22559c92?action=share&creator=22353900">Ấn vào để đi dến postman</a> </p>
 
-One day one hour
+<h4>One day one hour --- Chi tiết công việc<h4></p>
 
-- 23/6/2023 Tìm hiểu website thiết kế data,
+`********************** - BẮT ĐẦU -**********************`</p>
 
-- 24/6/2023 setup project
+`*` 23/6/2023 Tìm hiểu website thiết kế data, </p>
 
-- 25/6/2023 Call api của web F1 để xem cấu trúc html để bóc tách
+`*` 24/6/2023 setup project</p>
 
-- 26/6/2023 Tìm hiểu quy luật theo từng năm "Mỗi năm sẽ có các cuộc đua ở các nước , ở mỗi nước sẽ có các giải như : fastest laps, pit stop summary , starting grid ,... ".
+`*` 25/6/2023 Call api của web F1 để xem cấu trúc html để bóc tách</p>
 
-- 27/6/2023 Code bóc tách html sử dụng puppeteer
+`*` 26/6/2023 Tìm hiểu quy luật theo từng năm "Mỗi năm sẽ có các cuộc đua ở các nước , ở mỗi nước sẽ có các giải như : fastest laps, pit stop summary , starting grid ,... ".</p>
 
-- 28/9/2023 Kiểm tra data phát hiện quy luật đưa ra ngày 26/6/2023 không đúng với mọi năm ==> tìm hiểu lại quy luật giải đấu.
+`*` 27/6/2023 Code bóc tách html sử dụng puppeteer</p>
 
-- 1/7/2023 Tiến hành code fix craw data sau kho craw và check thì vẫn có một số data bị thiếu
+`*` 28/9/2023 Kiểm tra data phát hiện quy luật đưa ra ngày 26/6/2023 không đúng với mọi năm ==> tìm hiểu lại quy luật giải đấu.</p>
 
-- 2/7/2023
-  [
+`*` 1/7/2023 Tiến hành code fix craw data sau kho craw và check thì vẫn có một số data bị thiếu</p>
 
-# api xem danh sách tất cả các tay đua theo năm.
+`*` 2/7/2023</p>
+[</p>
 
-https://api-f1-i33j.onrender.com/api/drivers/:year
+# api xem danh sách tất cả các tay đua theo năm.</p>
 
-]
+https://api-f1-i33j.onrender.com/api/drivers/:year</p>
 
-- 3/7/2023
-  [
+]</p>
 
-# Tìm kết quả thi đấu của từng tay đua theo năm
+`*` 3/7/2023</p>
+`*********** - BẮT ĐẦU 3/7 - ***********`</p>
+[</p>
 
-# Tên tay đua phải được xử lý trước khi truyền vào.Tất cả các khoản trắng phải được lượt bỏ và thay bằng "-" Ví dụ : Max Verstappen VER ==> Max-Verstappen-VER
+# Tìm kết quả thi đấu của từng tay đua theo năm</p>
 
-https://api-f1-i33j.onrender.com/api/drivers/:year/:name
+<b> Tên tay đua phải được xử lý trước khi truyền vào.Tất cả các khoản trắng phải được lượt bỏ và thay bằng "-" Ví dụ : Max Verstappen VER ==> Max-Verstappen-VER </b></p>
 
-# Tìm kết quả thi đấu của các team tham gia theo năm,
+https://api-f1-i33j.onrender.com/api/drivers/:year/:name</p>
 
-https://api-f1-i33j.onrender.com/api/teams/:year
+# Tìm kết quả thi đấu của các team tham gia theo năm,</p>
 
-# Tìm kết quả thi đấu của 1 team theo năm
+https://api-f1-i33j.onrender.com/api/teams/:year</p>
 
-# Tên tay team phải được xử lý trước khi truyền vào.Tất cả các khoản trắng phải được lượt bỏ và thay bằng "-" Ví dụ : Red Bull Racing Honda ==> Red-Bull-Racing-Honda
+# Tìm kết quả thi đấu của 1 team theo năm</p>
 
-https://api-f1-i33j.onrender.com/api/:year/:team
+<b> Tên team phải được xử lý trước khi truyền vào.Tất cả các khoản trắng phải được lượt bỏ và thay bằng "-" Ví dụ : Red Bull Racing Honda ==> Red-Bull-Racing-Honda </b> </p>
 
-# Tìm kết quả của giải đua theo năm ở các nước.
+https://api-f1-i33j.onrender.com/api/:year/:team</p>
 
-https://api-f1-i33j.onrender.com/api/raceResults/:year
+# Tìm kết quả của giải đua theo năm ở các nước.</p>
 
-# Tìm kết quả của giải đua theo năm ở một nước.
+https://api-f1-i33j.onrender.com/api/raceResults/:year</p>
 
-https://api-f1-i33j.onrender.com/api/raceResults/:year/:country
+# Tìm kết quả của giải đua theo năm ở một nước.</p>
 
-]
+https://api-f1-i33j.onrender.com/api/raceResults/:year/:country</p>
 
-- 5/7/2023
-  [
-  update api
+]</p>
+`*********** - KẾT THÚC 3/7 - ***********`</p>
+`*` 5/7/2023</p>
+`*********** - BẮT ĐẦU 5/7 - ***********`</p>
+[</p>
+update api</p>
 
-# Tìm danh sách các giải đua phụ theo năm ở từng địa điểm đua
+# Tìm danh sách các giải đua phụ theo năm ở từng địa điểm đua</p>
 
-https://api-f1-i33j.onrender.com/api/races/:country
+https://api-f1-i33j.onrender.com/api/races/:country</p>
 
-# Tìm kết quả của giải đua phụ theo năm ở một nước. Khi call lấy được danh sách giải phụ ở một nước, người dùng truyền key của giải phụ muốn xem vào nameRace.
+# Tìm kết quả của giải đua phụ theo năm ở một nước. </p>
 
-https://api-f1-i33j.onrender.com/api/raceResults/:year/:country/:nameRace
+<b>Khi call lấy được danh sách giải phụ ở một nước, người dùng truyền key của giải phụ muốn xem vào nameRace.<b></p>
 
-# Kết quả vòng nhanh nhất theo năm DHL FASTEST LAP AWARD
+https://api-f1-i33j.onrender.com/api/raceResults/:year/:country/:nameRace</p>
 
-https://api-f1-i33j.onrender.com/api/raceResults/fastestLap/:year
+# Kết quả vòng nhanh nhất theo năm DHL FASTEST LAP AWARD</p>
 
-Tích hợp redis tối ưu trải nghiệm người dùng.
-]
+https://api-f1-i33j.onrender.com/api/raceResults/fastestLap/:year</p>
 
-- 7/7/2023 deploy to render
+Tích hợp redis tối ưu trải nghiệm người dùng.</p>
+]</p>
+`*********** - KẾT THÚC 5/7 - ***********`</p>
 
-Cách triển khai :
-B1 : Đảm bảo máy đã được cài đặt node :"https://hocwebchuan.com/tutorial/guide/nodejs/install_nodejs.php"
-B2 :Tải source code : git clone "https://github.com/thaihung24/Api-F1.git"
-B3 : Tải các gói cài đặt : npm i
-B4 : Ở thư mục gốc (cùng cấp với src) tạo file có tên ".env" và đảm bảo trong .env chứa
+- 7/7/2023 deploy to render</p>
+  `********************** - KẾT THÚC - **********************`</p>
+  Cách triển khai :</p>
+  B1 : Đảm bảo máy đã được cài đặt node :"https://hocwebchuan.com/tutorial/guide/nodejs/install_nodejs.php"</p>
+  B2 :Tải source code : git clone "https://github.com/thaihung24/Api-F1.git"</p>
+  B3 : Tải các gói cài đặt : npm i</p>
+  B4 : Ở thư mục gốc (cùng cấp với src) tạo file có tên ".env" và đảm bảo trong .env chứa</p>
 
-######
+`*********** - Nội dung trong .evn - ***********`</p>
 
-DB_USERNAME="ThaisHungw"
-DB_PASSWORD="hungngubo123"
-DB_NAME="F1-dev"
-Redis = true
-REDIS_URL = "rediss://red-cij8i659aq01qqgvnmvg:Qt6fDi5D75NPcbGgVzgHDlM50pGfrvHI@singapore-redis.render.com:6379"
+DB_USERNAME="ThaisHungw"</p>
+DB_PASSWORD="hungngubo123"</p>
+DB_NAME="F1-dev"</p>
+Redis = true</p>
+REDIS_URL = "rediss://red-cij8i659aq01qqgvnmvg:Qt6fDi5D75NPcbGgVzgHDlM50pGfrvHI@singapore-redis.render.com:6379"</p>
 
-######
+`*********** - Nội dung trong .evn - ***********`</p>
 
-# Redis=true nếu muốn tích hơp redis để caching data
+`*` Redis=true nếu muốn tích hơp redis để caching data</p>
 
-# REDIS_URL link connect với redis để caching data tối ưu trãi nghiệm người dùng
+`*` REDIS_URL link connect với redis để caching data tối ưu trãi nghiệm người dùng</p>
 
-# Đảm bảo rằng redis được cài trên máy
+<b> Hướng dẫn cài redis nếu cần !!</b></p>
 
-# Nếu chưa
+<b> Nếu chưa</b></p>
 
-B4.1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-B4.2 brew install redis
-B4.3 brew services start redis
-B4.4 redis-cli ping
+`*` B4.1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"</p>
+`*` B4.2 brew install redis</p>
+`*` B4.3 brew services start redis</p>
+`*` B4.4 redis-cli ping</p>
 
-B5 : Chạy ứng dụng ở môi trường dev : npm run dev
+`*` B5 : Chạy ứng dụng ở môi trường dev : npm run dev</p>
 
-Ứng dụng sẽ được chạy dưới port 3000:
-Để sử dụng api anh/chị có thể sử dụng các api được liệt kê phía trên
-thay https://api-f1-i33j.onrender.com thành http://localhost:3000
+Ứng dụng sẽ được chạy dưới port 3000:</p>
+Để sử dụng api anh/chị có thể sử dụng các api được liệt kê phía trên</p>
+thay https://api-f1-i33j.onrender.com thành http://localhost:3000</p>
