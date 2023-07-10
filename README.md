@@ -7,8 +7,8 @@
 `*` RaceResults : Lưu kết quả thi đấu của các tay đua theo từng năm ở từng địa điểm</p>
 
 `*` Endpoint: Có dạng link/:thamso/:thamso</p>
-`*` ==> Người dùng phải đảm bảo truyền đúng params nếu truyền sai thi api vẫn có thể thực thi nhưng sẽ trả về kết quả khác mong đợi.
-`*` ví dụ https://api-f1-i33j.onrender.com/api/raceResults/:year/:country/:nameRace (api này Tìm kết quả của giải đua phụ nameRace theo năm year ở một nước country. )</p>
+`*` ==> Người dùng phải đảm bảo truyền đúng params nếu truyền sai thi api vẫn có thể thực thi nhưng sẽ trả về kết quả khác mong đợi.</p>
+`*` Ví dụ https://api-f1-i33j.onrender.com/api/raceResults/:year/:country/:nameRace (api này Tìm kết quả của giải đua phụ nameRace theo năm year ở một nước country. )</p>
 `*` Đảm bảo rằng bạn truyền đúng tham số cần truyền theo thứ tự</p>
 `*` ví dụ https://api-f1-i33j.onrender.com/api/raceResults/2023/Monaco/fastest-laps</p>
 `*` Nếu người dùng không truyền year</p>
@@ -17,9 +17,9 @@
 `*` Lúc này app sẽ tự động hiểu year = Monaco country = fastest-laps</p>
 `*` Và vẫn sẽ gọi đến api # Tìm kết quả của giải đua theo năm ở một nước.</p>
 
-# Link deploy : https://api-f1-i33j.onrender.com </p>
+<b> Link deploy</b> : https://api-f1-i33j.onrender.com </p>
 
-# link postmand : https://bold-desert-303323.postman.co/workspace/My-Workspace~088d016d-ad13-468f-8a92-2022a05cb2a0/collection/22353900-d58c1c19-49d9-4105-87c4-422a22559c92?action=share&creator=22353900 </p>
+<a href="https://bold-desert-303323.postman.co/workspace/My-Workspace~088d016d-ad13-468f-8a92-2022a05cb2a0/collection/22353900-d58c1c19-49d9-4105-87c4-422a22559c92?action=share&creator=22353900">link postmand</a> </p>
 
 One day one hour</p>
 
@@ -51,7 +51,7 @@ One day one hour</p>
 
 # Tìm kết quả thi đấu của từng tay đua theo năm</p>
 
-# Tên tay đua phải được xử lý trước khi truyền vào.Tất cả các khoản trắng phải được lượt bỏ và thay bằng "-" Ví dụ : Max Verstappen VER ==> Max-Verstappen-VER</p>
+<b> Tên tay đua phải được xử lý trước khi truyền vào.Tất cả các khoản trắng phải được lượt bỏ và thay bằng "-" Ví dụ : Max Verstappen VER ==> Max-Verstappen-VER </b></p>
 
 https://api-f1-i33j.onrender.com/api/drivers/:year/:name</p>
 
@@ -61,7 +61,7 @@ https://api-f1-i33j.onrender.com/api/teams/:year</p>
 
 # Tìm kết quả thi đấu của 1 team theo năm</p>
 
-# Tên tay team phải được xử lý trước khi truyền vào.Tất cả các khoản trắng phải được lượt bỏ và thay bằng "-" Ví dụ : Red Bull Racing Honda ==> Red-Bull-Racing-Honda</p>
+<b> Tên tay team phải được xử lý trước khi truyền vào.Tất cả các khoản trắng phải được lượt bỏ và thay bằng "-" Ví dụ : Red Bull Racing Honda ==> Red-Bull-Racing-Honda </b> </p>
 
 https://api-f1-i33j.onrender.com/api/:year/:team</p>
 
@@ -83,7 +83,9 @@ https://api-f1-i33j.onrender.com/api/raceResults/:year/:country</p>
 
 https://api-f1-i33j.onrender.com/api/races/:country</p>
 
-# Tìm kết quả của giải đua phụ theo năm ở một nước. Khi call lấy được danh sách giải phụ ở một </p>nước, người dùng truyền key của giải phụ muốn xem vào nameRace.</p>
+# Tìm kết quả của giải đua phụ theo năm ở một nước. </p>
+
+<b>Khi call lấy được danh sách giải phụ ở một nước, người dùng truyền key của giải phụ muốn xem vào nameRace.<b></p>
 
 https://api-f1-i33j.onrender.com/api/raceResults/:year/:country/:nameRace</p>
 
@@ -112,13 +114,13 @@ REDIS_URL = "rediss://red-cij8i659aq01qqgvnmvg:Qt6fDi5D75NPcbGgVzgHDlM50pGfrvHI@
 
 ######
 
-# Redis=true nếu muốn tích hơp redis để caching data
+<b> Redis=true nếu muốn tích hơp redis để caching data</b></p>
 
-# REDIS_URL link connect với redis để caching data tối ưu trãi nghiệm người dùng
+<b> REDIS_URL link connect với redis để caching data tối ưu trãi nghiệm người dùng</b></p>
 
-# Đảm bảo rằng redis được cài trên máy
+<b> Đảm bảo rằng redis được cài trên máy</b></p>
 
-# Nếu chưa
+<b> Nếu chưa</b></p>
 
 B4.1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"</p>
 B4.2 brew install redis</p>
