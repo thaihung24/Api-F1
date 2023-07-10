@@ -23,33 +23,34 @@
 
 <h4>One day one hour --- Chi tiết công việc<h4></p>
 
-`***************************************************************************************** - BẮT ĐẦU - **********************************************************************************************************`
+`******************************************** - BẮT ĐẦU - ********************************************`</p>
 
-`*` - 23/6/2023 Tìm hiểu website thiết kế data, </p>
+`*` 23/6/2023 Tìm hiểu website thiết kế data, </p>
 
-`*`- 24/6/2023 setup project</p>
+`*` 24/6/2023 setup project</p>
 
-`*`- 25/6/2023 Call api của web F1 để xem cấu trúc html để bóc tách</p>
+`*` 25/6/2023 Call api của web F1 để xem cấu trúc html để bóc tách</p>
 
-`*`- 26/6/2023 Tìm hiểu quy luật theo từng năm "Mỗi năm sẽ có các cuộc đua ở các nước , ở mỗi nước sẽ có các giải như : fastest laps, pit stop summary , starting grid ,... ".</p>
+`*` 26/6/2023 Tìm hiểu quy luật theo từng năm "Mỗi năm sẽ có các cuộc đua ở các nước , ở mỗi nước sẽ có các giải như : fastest laps, pit stop summary , starting grid ,... ".</p>
 
-`*`- 27/6/2023 Code bóc tách html sử dụng puppeteer</p>
+`*` 27/6/2023 Code bóc tách html sử dụng puppeteer</p>
 
-`*`- 28/9/2023 Kiểm tra data phát hiện quy luật đưa ra ngày 26/6/2023 không đúng với mọi năm ==> tìm hiểu lại quy luật giải đấu.</p>
+`*` 28/9/2023 Kiểm tra data phát hiện quy luật đưa ra ngày 26/6/2023 không đúng với mọi năm ==> tìm hiểu lại quy luật giải đấu.</p>
 
-`*`- 1/7/2023 Tiến hành code fix craw data sau kho craw và check thì vẫn có một số data bị thiếu</p>
+`*` 1/7/2023 Tiến hành code fix craw data sau kho craw và check thì vẫn có một số data bị thiếu</p>
 
-`*`- 2/7/2023</p>
+`*` 2/7/2023</p>
 [</p>
 
 # api xem danh sách tất cả các tay đua theo năm.</p>
 
-`*`https://api-f1-i33j.onrender.com/api/drivers/:year</p>
+https://api-f1-i33j.onrender.com/api/drivers/:year</p>
 
 ]</p>
 
-- 3/7/2023</p>
-  [</p>
+`*` 3/7/2023</p>
+`*********** - BẮT ĐẦU 3/7 - ***********`</p>
+[</p>
 
 # Tìm kết quả thi đấu của từng tay đua theo năm</p>
 
@@ -76,10 +77,11 @@ https://api-f1-i33j.onrender.com/api/raceResults/:year</p>
 https://api-f1-i33j.onrender.com/api/raceResults/:year/:country</p>
 
 ]</p>
-
-- 5/7/2023</p>
-  [</p>
-  update api</p>
+`*********** - BẮT ĐẦU 3/7 - ***********`</p>
+`*` 5/7/2023</p>
+`*********** - BẮT ĐẦU 5/7 - ***********`</p>
+[</p>
+update api</p>
 
 # Tìm danh sách các giải đua phụ theo năm ở từng địa điểm đua</p>
 
@@ -97,9 +99,10 @@ https://api-f1-i33j.onrender.com/api/raceResults/fastestLap/:year</p>
 
 Tích hợp redis tối ưu trải nghiệm người dùng.</p>
 ]
+`*********** - KẾT THÚC 5/7 - ***********`</p>
 
 - 7/7/2023 deploy to render</p>
-  `***************************************************************************************** - KẾT THÚC - **********************************************************************************************************`
+  `******************************************** - KẾT THÚC - ********************************************`</p>
   Cách triển khai :</p>
   B1 : Đảm bảo máy đã được cài đặt node :"https://hocwebchuan.com/tutorial/guide/nodejs/install_nodejs.php"</p>
   B2 :Tải source code : git clone "https://github.com/thaihung24/Api-F1.git"</p>
