@@ -19,11 +19,11 @@
 
 <b> Link deploy</b> : https://api-f1-i33j.onrender.com </p>
 
-<b>Link postmand</><a href="https://bold-desert-303323.postman.co/workspace/My-Workspace~088d016d-ad13-468f-8a92-2022a05cb2a0/collection/22353900-d58c1c19-49d9-4105-87c4-422a22559c92?action=share&creator=22353900">Ấn vào để đi dến postman</a> </p>
+<b>Link postmand</b><a href="https://bold-desert-303323.postman.co/workspace/My-Workspace~088d016d-ad13-468f-8a92-2022a05cb2a0/collection/22353900-d58c1c19-49d9-4105-87c4-422a22559c92?action=share&creator=22353900">Ấn vào để đi dến postman</a> </p>
 
 <h4>One day one hour --- Chi tiết công việc<h4></p>
 
-`******************************************** - BẮT ĐẦU - ********************************************`</p>
+`********************** - BẮT ĐẦU -**********************`</p>
 
 `*` 23/6/2023 Tìm hiểu website thiết kế data, </p>
 
@@ -102,14 +102,14 @@ Tích hợp redis tối ưu trải nghiệm người dùng.</p>
 `*********** - KẾT THÚC 5/7 - ***********`</p>
 
 - 7/7/2023 deploy to render</p>
-  `******************************************** - KẾT THÚC - ********************************************`</p>
+  `********************** - KẾT THÚC - **********************`</p>
   Cách triển khai :</p>
   B1 : Đảm bảo máy đã được cài đặt node :"https://hocwebchuan.com/tutorial/guide/nodejs/install_nodejs.php"</p>
   B2 :Tải source code : git clone "https://github.com/thaihung24/Api-F1.git"</p>
   B3 : Tải các gói cài đặt : npm i</p>
   B4 : Ở thư mục gốc (cùng cấp với src) tạo file có tên ".env" và đảm bảo trong .env chứa</p>
 
-######
+`*********** - Nội dung trong .evn - ***********`</p>
 
 DB_USERNAME="ThaisHungw"</p>
 DB_PASSWORD="hungngubo123"</p>
@@ -117,22 +117,22 @@ DB_NAME="F1-dev"</p>
 Redis = true</p>
 REDIS_URL = "rediss://red-cij8i659aq01qqgvnmvg:Qt6fDi5D75NPcbGgVzgHDlM50pGfrvHI@singapore-redis.render.com:6379"</p>
 
-######
+`*********** - Nội dung trong .evn - ***********`</p>
 
-<b> Redis=true nếu muốn tích hơp redis để caching data</b></p>
+`*` Redis=true nếu muốn tích hơp redis để caching data</p>
 
-<b> REDIS_URL link connect với redis để caching data tối ưu trãi nghiệm người dùng</b></p>
+`*` REDIS_URL link connect với redis để caching data tối ưu trãi nghiệm người dùng</p>
 
-<b> Đảm bảo rằng redis được cài trên máy</b></p>
+<b> Hướng dẫn cài redis nếu cần !!</b></p>
 
 <b> Nếu chưa</b></p>
 
-B4.1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"</p>
-B4.2 brew install redis</p>
-B4.3 brew services start redis</p>
-B4.4 redis-cli ping</p>
+`*` B4.1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"</p>
+`*` B4.2 brew install redis</p>
+`*` B4.3 brew services start redis</p>
+`*` B4.4 redis-cli ping</p>
 
-B5 : Chạy ứng dụng ở môi trường dev : npm run dev</p>
+`*` B5 : Chạy ứng dụng ở môi trường dev : npm run dev</p>
 
 Ứng dụng sẽ được chạy dưới port 3000:</p>
 Để sử dụng api anh/chị có thể sử dụng các api được liệt kê phía trên</p>
