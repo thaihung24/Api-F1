@@ -19,7 +19,7 @@
 
 <b> Link deploy</b> : https://api-f1-i33j.onrender.com </p>
 
-<b>Link postmand</b><a href="https://bold-desert-303323.postman.co/workspace/My-Workspace~088d016d-ad13-468f-8a92-2022a05cb2a0/collection/22353900-d58c1c19-49d9-4105-87c4-422a22559c92?action=share&creator=22353900">Ấn vào để đi dến postman</a> </p>
+<b>Link postmand</b>: <a href="https://bold-desert-303323.postman.co/workspace/My-Workspace~088d016d-ad13-468f-8a92-2022a05cb2a0/collection/22353900-d58c1c19-49d9-4105-87c4-422a22559c92?action=share&creator=22353900">Ấn vào để đi dến postman</a> </p>
 
 <h4>One day one hour --- Chi tiết công việc<h4></p>
 
