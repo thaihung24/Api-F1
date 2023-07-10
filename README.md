@@ -98,7 +98,7 @@ https://api-f1-i33j.onrender.com/api/raceResults/:year/:country/:nameRace</p>
 https://api-f1-i33j.onrender.com/api/raceResults/fastestLap/:year</p>
 
 Tích hợp redis tối ưu trải nghiệm người dùng.</p>
-]
+]</p>
 `*********** - KẾT THÚC 5/7 - ***********`</p>
 
 - 7/7/2023 deploy to render</p>
