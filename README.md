@@ -137,3 +137,13 @@ REDIS_URL = "rediss://red-cij8i659aq01qqgvnmvg:Qt6fDi5D75NPcbGgVzgHDlM50pGfrvHI@
 Ứng dụng sẽ được chạy dưới port 3000:</p>
 Để sử dụng api anh/chị có thể sử dụng các api được liệt kê phía trên</p>
 thay https://api-f1-i33j.onrender.com thành http://localhost:3000</p>
+			**approval-service** => up file jar   | version.mf -->  Version: 1.0.51 </p>
+			**auth-service**	=> up file jar   | version.mf -->  Version: 1.0.51 </p>
+			**bank-service**	=> up file jar   | version.mf -->  Version: 1.0.51 </p>
+			**napas-service**	=> up file jar   | version.mf -->  Version: 1.0.51 </p>
+			**nonfinancial-service** => up file jar   | version.mf -->  Version: 1.0.51 </p>
+			**notification-service** => up file jar   | version.mf -->  Version: 1.0.51 </p>
+			**onboard-service**	=> up file jar   | version.mf -->  Version: 1.0.51 </p>
+			**sms-otp-service** => up file jar   | version.mf -->  Version: 1.0.51 </p>
+			**soft-otp-service** => up file jar   | version.mf -->  Version: 1.0.51 </p>
+			**transfer-service** => up file jar   | version.mf -->  Version: 1.0.51 </p>
